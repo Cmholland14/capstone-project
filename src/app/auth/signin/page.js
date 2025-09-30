@@ -32,8 +32,7 @@ export default function SignInPage() {
           <div className="card shadow-lg border-0">
             <div className="card-body p-5">
               <div className="text-center mb-4">
-                <h2 className="fw-bold">Sign In</h2>
-                <p className="text-muted">Welcome back! Please sign in to your account.</p>
+                <h2 className="fw-bold">Member Login</h2>
               </div>
 
               <div className="mb-4">

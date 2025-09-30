@@ -1,6 +1,11 @@
-import NextAuth from "next-auth"
-import { authOptions } from "@/auth"
+// Example for /app/api/products/route.js
+export async function GET(request) {
+    // Handle GET requests for products
+    return Response.json({ products: [] })
+}
 
-const handler = NextAuth(authOptions)
-
-export { handler as GET, handler as POST }
+export async function POST(request) {
+    // Handle POST requests for products
+    const data = await request.json()
+    return Response.json({ message: 'Product created' })
+}
