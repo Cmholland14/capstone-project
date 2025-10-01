@@ -1,4 +1,4 @@
-const Product = require('../models/Product');
+import Product from '..src/lib/models/product.js';
 
 export class ProductController {
     // Get all products
