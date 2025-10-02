@@ -27,14 +27,14 @@ export class UserController {
     async getUserById(id) {
         try {
             console.log(`[UserController] getUserById: Fetching user with ID: ${id}`);
-            const user = await this.userDao.getUserById(parseInt(id));
+            const user = await this.userDao.getUserById(id);
             if (!user) {
                 console.log(`[UserController] getUserById: User not found with ID: ${id}`);
                 return null;
             }
             console.log(`[UserController] getUserById: User found with ID: ${id}`);
             // Remove password from response for security
-            const { password, ...userWithoutPassword } = user;
+            const { password, ...userWithoutPassword } = user.toObject();
             return userWithoutPassword;
         } catch (error) {
             console.error(`[UserController] getUserById: Error occurred for ID: ${id}`, error);
@@ -69,12 +69,6 @@ export class UserController {
                 return null;
             }
 
-            // Check if user is active
-            if (user.status !== 'active') {
-                console.log(`[UserController] authenticateUser: User account is not active for email: ${email}, status: ${user.status}`);
-                throw new Error('User account is not active');
-            }
-
             // Use bcrypt to compare encrypted passwords
             const isValidPassword = await bcrypt.compare(password, user.password);
             
@@ -85,7 +79,7 @@ export class UserController {
 
             console.log(`[UserController] authenticateUser: Authentication successful for email: ${email}`);
             // Remove password from response
-            const { password: _, ...userWithoutPassword } = user;
+            const { password: _, ...userWithoutPassword } = user.toObject();
             return userWithoutPassword;
         } catch (error) {
             console.error(`[UserController] authenticateUser: Authentication error for email: ${email}`, error);
@@ -117,10 +111,10 @@ export class UserController {
             }
             
             const newUser = await this.userDao.createUser(userData);
-            console.log(`[UserController] createUser: User created successfully with ID: ${newUser.id}, email: ${userData.email}`);
+            console.log(`[UserController] createUser: User created successfully with ID: ${newUser._id}, email: ${userData.email}`);
             
             // Remove password from response
-            const { password, ...userWithoutPassword } = newUser;
+            const { password, ...userWithoutPassword } = newUser.toObject();
             return userWithoutPassword;
         } catch (error) {
             console.error(`[UserController] createUser: Error creating user with email: ${userData.email}`, error);
@@ -133,7 +127,7 @@ export class UserController {
             console.log(`[UserController] updateUser: Updating user with ID: ${id}`);
             
             // Check if user exists
-            const existingUser = await this.userDao.getUserById(parseInt(id));
+            const existingUser = await this.userDao.getUserById(id);
             if (!existingUser) {
                 console.log(`[UserController] updateUser: User not found with ID: ${id}`);
                 return null;
@@ -155,11 +149,11 @@ export class UserController {
                 updatedData.password = await bcrypt.hash(updatedData.password, 10);
             }
 
-            const updatedUser = await this.userDao.updateUser(parseInt(id), updatedData);
+            const updatedUser = await this.userDao.updateUser(id, updatedData);
             console.log(`[UserController] updateUser: User updated successfully with ID: ${id}`);
             
             // Remove password from response
-            const { password, ...userWithoutPassword } = updatedUser;
+            const { password, ...userWithoutPassword } = updatedUser.toObject();
             return userWithoutPassword;
         } catch (error) {
             console.error(`[UserController] updateUser: Error updating user with ID: ${id}`, error);
@@ -170,7 +164,7 @@ export class UserController {
     async deleteUser(id) {
         try {
             console.log(`[UserController] deleteUser: Deleting user with ID: ${id}`);
-            const deletedUser = await this.userDao.deleteUser(parseInt(id));
+            const deletedUser = await this.userDao.deleteUser(id);
             if (!deletedUser) {
                 console.log(`[UserController] deleteUser: User not found with ID: ${id}`);
                 return null;
@@ -178,54 +172,11 @@ export class UserController {
             
             console.log(`[UserController] deleteUser: User deleted successfully with ID: ${id}`);
             // Remove password from response
-            const { password, ...userWithoutPassword } = deletedUser;
+            const { password, ...userWithoutPassword } = deletedUser.toObject();
             return userWithoutPassword;
         } catch (error) {
             console.error(`[UserController] deleteUser: Error deleting user with ID: ${id}`, error);
             throw new Error(`Failed to delete user: ${error.message}`);
-        }
-    }
-
-    async changeUserStatus(id, status) {
-        try {
-            console.log(`[UserController] changeUserStatus: Changing status for user ID: ${id} to: ${status}`);
-            
-            if (!['active', 'inactive', 'suspended'].includes(status)) {
-                console.error(`[UserController] changeUserStatus: Invalid status provided: ${status}`);
-                throw new Error('Invalid status. Must be active, inactive, or suspended');
-            }
-
-            const updatedUser = await this.userDao.updateUser(parseInt(id), { status });
-            if (!updatedUser) {
-                console.log(`[UserController] changeUserStatus: User not found with ID: ${id}`);
-                return null;
-            }
-
-            console.log(`[UserController] changeUserStatus: Status changed successfully for user ID: ${id} to: ${status}`);
-            // Remove password from response
-            const { password, ...userWithoutPassword } = updatedUser;
-            return userWithoutPassword;
-        } catch (error) {
-            console.error(`[UserController] changeUserStatus: Error changing status for user ID: ${id}`, error);
-            throw new Error(`Failed to change user status: ${error.message}`);
-        }
-    }
-
-    async getUsersByRole(role) {
-        try {
-            console.log(`[UserController] getUsersByRole: Fetching users with role: ${role}`);
-            const allUsers = await this.userDao.getAllUsers();
-            const filteredUsers = allUsers.filter(user => user.role === role);
-            console.log(`[UserController] getUsersByRole: Found ${filteredUsers.length} users with role: ${role}`);
-            
-            // Remove password from response for security
-            return filteredUsers.map(user => {
-                const { password, ...userWithoutPassword } = user;
-                return userWithoutPassword;
-            });
-        } catch (error) {
-            console.error(`[UserController] getUsersByRole: Error fetching users by role: ${role}`, error);
-            throw new Error(`Failed to get users by role: ${error.message}`);
         }
     }
 }
