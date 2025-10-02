@@ -1,4 +1,4 @@
-import User from '../models/customer.js';
+import User from '../models/Customer.js';
 
 export class UserDao {
     async getAllUsers() {
