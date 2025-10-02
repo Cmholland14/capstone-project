@@ -1,28 +1,28 @@
-import User from '../models/user.js';
+import Customer from '../models/Customer.js';
 
 export class UserDao {
     async getAllUsers() {
-        return await User.find();
+        return await Customer.find();
     }
 
     async getUserById(id) {
-        return await User.findById(id);
+        return await Customer.findById(id);
     }
 
     async getUserByEmail(email) {
-        return await User.findOne({ email });
+        return await Customer.findOne({ email });
     }
 
     async createUser(userData) {
-        const user = new User(userData);
+        const user = new Customer(userData);
         return await user.save();
     }
 
     async updateUser(id, updatedData) {
-        return await User.findByIdAndUpdate(id, updatedData, { new: true });
+        return await Customer.findByIdAndUpdate(id, updatedData, { new: true });
     }
 
     async deleteUser(id) {
-        return await User.findByIdAndDelete(id);
+        return await Customer.findByIdAndDelete(id);
     }
 }
