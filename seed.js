@@ -3,58 +3,94 @@ import Product from "./src/lib/models/Product.js";
 import Customer from "./src/lib/models/Customer.js";
 import Order from "./src/lib/models/Order.js";
 import Admin from "./src/lib/models/Admin.js";
+import dotenv from "dotenv";
 
-const MONGO_URI = "mongodb://127.0.0.1:27017/woolstore";
+// Load environment variables
+dotenv.config({ path: '.env.local' });
+
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/capstone-wool";
 
 // Dummy Products
 const products = [
   {
-    name: "Boucle Wool Throw",
-    description: "High quality boucle texture throw.",
-    price: 279.0,
+    name: "Premium Merino Wool Sweater",
+    description: "Luxurious merino wool sweater with premium softness and warmth. Perfect for layering or wearing alone.",
+    price: 189.0,
     stock: 25,
-    category: "Home & Living",
-    imageUrl: "https://example.com/images/merino-sweater.jpg",
+    category: "Clothing",
+    imageUrl: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
   },
   {
     name: "Chunky Knit Wool Blanket",
-    description: "Handwoven chunky knit blanket made with natural wool, perfect for winter nights.",
+    description: "Handwoven chunky knit blanket made with natural wool, perfect for winter nights and cozy evenings.",
     price: 249.5,
-    stock: 10,
+    stock: 15,
     category: "Home & Living",
-    imageUrl: "https://example.com/images/wool-blanket.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
   },
   {
     name: "Grey Style Wool Throw",
-    description: "Simple and chic, this everyday throw will suit any style of home.",
+    description: "Simple and chic, this everyday throw will suit any style of home. Made from 100% New Zealand wool.",
     price: 179.0,
-    stock: 100,
+    stock: 30,
     category: "Home & Living",
-    imageUrl: "https://example.com/images/grey-style-wool-throw.jpg",
-  },
-   {
-    name: "Modern Lifestyle Wool Throw",
-    description: "Ultra modern and versatile.",
-    price: 279.0,
-    stock: 25,
-    category: "Home & Living",
-    imageUrl: "https://example.com/images/merino-sweater.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
   },
   {
-    name: "Forest Wool Blanket",
-    description: "Get cosy with this classic Wool Throw in a classic cocoa colourway. The throw is made with 100% New Zealand wool to provide generous warmth and is finished with a twisted fringe.",
-    price: 249.5,
-    stock: 10,
-    category: "Home & Living",
-    imageUrl: "https://example.com/images/wool-blanket.jpg",
+    name: "Alpaca Wool Scarf",
+    description: "Ultra-soft alpaca wool scarf with elegant drape. Hypoallergenic and incredibly warm.",
+    price: 89.0,
+    stock: 45,
+    category: "Accessories",
+    imageUrl: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    name: "Wool Hiking Socks Set",
+    description: "Durable merino wool hiking socks with moisture-wicking properties. Set of 3 pairs.",
+    price: 45.0,
+    stock: 60,
+    category: "Accessories", 
+    imageUrl: "https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
   },
   {
     name: "Oslo Lambswool Throw",
-    description: " Woven from soft, warming lambswool, the throw offers a lightweight yet beautifully warm layer.",
-    price: 179.0,
-    stock: 100,
+    description: "Woven from soft, warming lambswool, this throw offers a lightweight yet beautifully warm layer.",
+    price: 199.0,
+    stock: 20,
     category: "Home & Living",
-    imageUrl: "https://example.com/images/wool-yarn.jpg",
+    imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    name: "Cable Knit Wool Cardigan",
+    description: "Classic cable knit cardigan in pure wool. Timeless style meets modern comfort.",
+    price: 165.0,
+    stock: 18,
+    category: "Clothing",
+    imageUrl: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    name: "Wool Felt Hat",
+    description: "Handcrafted wool felt hat with classic styling. Water-resistant and durable.",
+    price: 75.0,
+    stock: 35,
+    category: "Accessories",
+    imageUrl: "https://images.unsplash.com/photo-1514327605112-b887c0e61c4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    name: "Mohair Wool Cushion Cover",
+    description: "Luxurious mohair cushion cover with silk blend. Adds texture and warmth to any room.",
+    price: 55.0,
+    stock: 40,
+    category: "Home & Living",
+    imageUrl: "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    name: "Wool Blanket - King Size",
+    description: "Get cozy with this classic wool blanket in king size. Made with 100% New Zealand wool for generous warmth.",
+    price: 320.0,
+    stock: 8,
+    category: "Home & Living",
+    imageUrl: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
   },
 ];
 
@@ -112,7 +148,7 @@ const admins = [
 
 const seedData = async () => {
   try {
-    await mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(MONGO_URI);
     console.log("✅ MongoDB connected");
 
     // Clear old data

@@ -27,6 +27,10 @@ export default function Navbar() {
                         <li className="nav-item">
                             <Link className="nav-link" href="/">Home</Link>
                         </li>
+                        
+                        <li className="nav-item">
+                            <Link className="nav-link" href="/products">Products</Link>
+                        </li>
 
                         {session && session.user?.role === "admin" && (
                             <li className="nav-item">

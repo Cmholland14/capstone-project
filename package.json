@@ -2,6 +2,7 @@
   "name": "next-app-auth",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
@@ -11,6 +12,7 @@
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "bootstrap": "^5.3.8",
+    "dotenv": "^17.2.3",
     "mongoose": "^8.18.3",
     "next": "15.5.3",
     "next-auth": "^4.24.11",

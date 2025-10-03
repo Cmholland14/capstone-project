@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { UserController } from '@/lib/controllers/UserController';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/auth';
+import connectDB from '@/lib/mongodb';
 
 const userController = new UserController();
 
@@ -9,6 +10,9 @@ const userController = new UserController();
 export async function GET(request) {
     try {
         console.log('[API] GET /api/users - Request received');
+        
+        // Connect to database
+        await connectDB();
         
         // Check authentication
         const session = await getServerSession(authOptions);

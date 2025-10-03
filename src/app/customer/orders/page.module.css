@@ -1,0 +1,41 @@
+.ordersPage {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ordersPage h1 {
+  margin-bottom: 2rem;
+  color: #333;
+  text-align: center;
+}
+
+.ordersPage .card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  transition: transform 0.2s ease-in-out;
+}
+
+.ordersPage .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.ordersPage .badge {
+  font-size: 0.8em;
+}
+
+.ordersPage .list-unstyled li {
+  margin-bottom: 0.25rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .ordersPage {
+    padding: 1rem;
+  }
+  
+  .ordersPage .col-md-6 {
+    margin-bottom: 1rem;
+  }
+}

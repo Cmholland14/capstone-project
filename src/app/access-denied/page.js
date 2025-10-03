@@ -1,5 +1,7 @@
 "use client"
 
+import Link from 'next/link';
+
 export default function AccessDenied() {
   return (
     <div className="container mt-5">
@@ -8,15 +10,15 @@ export default function AccessDenied() {
           <div className="alert alert-danger text-center">
             <h2 className="mb-3">🚫 Access Denied</h2>
             <p className="mb-3">
-              You don't have permission to access this page. 
+              You don&apos;t have permission to access this page. 
               This area is restricted to administrators only.
             </p>
-            <a href="/" className="btn btn-primary me-2">
+            <Link href="/" className="btn btn-primary me-2">
               Go Home
-            </a>
-            <a href="/auth/signin" className="btn btn-outline-secondary">
+            </Link>
+            <Link href="/auth/signin" className="btn btn-outline-secondary">
               Sign In as Admin
-            </a>
+            </Link>
           </div>
         </div>
       </div>
