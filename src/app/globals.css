@@ -1,12 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+/* Custom font face for Garet if you have the font files */
+/*
+@font-face {
+  font-family: 'Garet';
+  src: url('/fonts/Garet-Book.woff2') format('woff2'),
+       url('/fonts/Garet-Book.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Garet';
+  src: url('/fonts/Garet-Medium.woff2') format('woff2'),
+       url('/fonts/Garet-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Garet';
+  src: url('/fonts/Garet-Bold.woff2') format('woff2'),
+       url('/fonts/Garet-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
 :root {
-  --background: #ffffff;
+  --background: #e6dacb;
   --foreground: #171717;
+  
+  /* Font weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #e6dacb;
+    --foreground: #2d3748;
   }
 }
 
@@ -14,14 +54,16 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  background-color: #e6dacb;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Space Grotesk', 'Garet', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
 * {
@@ -38,5 +80,98 @@ a {
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
+  }
+}
+
+/* Custom Navbar Styling */
+.navbar-custom {
+  background: linear-gradient(135deg, #8b7355 0%, #6d5a47 100%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.navbar-custom .navbar-brand {
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-custom .navbar-brand:hover {
+  color: #f8f9fa !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.navbar-custom .navbar-nav .nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navbar-custom .navbar-nav .nav-link:hover {
+  color: #f8f9fa !important;
+  transform: translateY(-1px);
+}
+
+.navbar-custom .navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffffff, transparent);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navbar-custom .navbar-nav .nav-link:hover::after {
+  width: 80%;
+}
+
+.navbar-custom .btn-outline-light {
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.navbar-custom .btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.navbar-custom .navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  transition: all 0.3s ease;
+}
+
+.navbar-custom .navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25) !important;
+}
+
+.navbar-custom .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Responsive navbar adjustments */
+@media (max-width: 991.98px) {
+  .navbar-custom .navbar-collapse {
+    background: rgba(139, 115, 85, 0.95);
+    border-radius: 10px;
+    margin-top: 1rem;
+    padding: 1rem;
+    backdrop-filter: blur(10px);
+  }
+  
+  .navbar-custom .navbar-nav .nav-link::after {
+    display: none;
   }
 }

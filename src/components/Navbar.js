@@ -7,9 +7,9 @@ export default function Navbar() {
     const { data: session } = useSession()
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav className="navbar navbar-expand-lg navbar-custom">
             <div className="container">
-                <Link className="navbar-brand" href="/">My App</Link>
+                <Link className="navbar-brand" href="/">Wool Store</Link>
                 <button
                     className="navbar-toggler"
                     type="button"

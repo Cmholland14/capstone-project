@@ -87,6 +87,68 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* About Section */}
+      <section className={styles.aboutSection}>
+        <div className="container py-5">
+          <div className="row align-items-center">
+            <div className="col-lg-6 mb-4 mb-lg-0">
+              <div className={styles.aboutImage}>
+                <img 
+                  src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="Traditional wool crafting process" 
+                  className="img-fluid rounded-3 shadow-lg"
+                  onError={(e) => {
+                    e.target.src = "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  }}
+                />
+                <div className={styles.aboutImageOverlay}>
+                  <span className={styles.aboutBadge}>Est. 2020</span>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-6">
+              <div className={styles.aboutContent}>
+                <h2 className={styles.aboutTitle}>
+                  Our Story of <span className={styles.accent}>Wool Excellence</span>
+                </h2>
+                <p className={styles.aboutText}>
+                  For over four years, we&apos;ve been dedicated to bringing you the finest wool products 
+                  from New Zealand&apos;s pristine landscapes. Our journey began with a simple mission: 
+                  to share the unmatched comfort and quality of authentic New Zealand wool with families around the world.
+                </p>
+                <p className={styles.aboutText}>
+                  Each product in our collection tells a story of tradition, craftsmanship, and sustainable practices. 
+                  We work directly with local farmers and artisans who share our passion for quality, ensuring that 
+                  every piece meets our exacting standards for softness, durability, and beauty.
+                </p>
+                <div className={styles.aboutStats}>
+                  <div className={styles.aboutStat}>
+                    <h4>1000+</h4>
+                    <p>Happy Customers</p>
+                  </div>
+                  <div className={styles.aboutStat}>
+                    <h4>50+</h4>
+                    <p>Premium Products</p>
+                  </div>
+                  <div className={styles.aboutStat}>
+                    <h4>100%</h4>
+                    <p>Natural Wool</p>
+                  </div>
+                </div>
+                <div className={styles.aboutActions}>
+                  <Link href="/products" className="btn btn-primary btn-lg me-3">
+                    Shop Our Collection
+                  </Link>
+                  <Link href="#collections" className="btn btn-outline-primary btn-lg">
+                    Learn More
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Welcome Message for Logged-in Users */}
       {session && (
         <section className={styles.welcomeSection}>

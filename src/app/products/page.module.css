@@ -1,12 +1,12 @@
 /* Products Page Styles */
 .productsPage {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: #e6dacb;
 }
 
 /* Page Header */
 .pageHeader {
-  background: linear-gradient(135deg, #6f42c1 0%, #5a67d8 100%);
+  background: #e6dacb 0%, #d4c4b8 100%;
   color: white;
   padding: 5rem 0 3rem;
   margin-bottom: 2rem;
@@ -67,7 +67,7 @@
 }
 
 .searchBox input:focus {
-  border-color: #6f42c1;
+  border-color: #e6dacb;
   box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
 }
 

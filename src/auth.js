@@ -104,31 +104,81 @@ export const authOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user, profile }) {
-      if (user) {
-        // Store user data in JWT token
-        token.role = user.role || "customer";
-        token.picture = user.image || profile?.picture || null;
-        token.status = user.status || "active";
-        token.id = user.id;
-        console.log(`[NextAuth] JWT token created for user ID: ${user.id}, role: ${token.role}`);
+    async jwt({ token, user, profile, trigger }) {
+      try {
+        if (user) {
+          // Store user data in JWT token
+          token.role = user.role || "customer";
+          token.picture = user.image || profile?.picture || null;
+          token.status = user.status || "active";
+          token.id = user.id;
+          console.log(`[NextAuth] JWT token created for user ID: ${user.id}, role: ${token.role}`);
+        }
+        return token;
+      } catch (error) {
+        console.error('[NextAuth] JWT callback error:', error);
+        // Return minimal token to prevent total failure
+        return {
+          sub: token.sub || user?.id,
+          email: token.email || user?.email,
+          name: token.name || user?.name,
+          role: 'customer',
+          status: 'active'
+        };
       }
-      return token;
     },
     async session({ session, token }) {
-      if (session.user && token) {
-        // Add custom fields to session
-        session.user.role = token.role;
-        session.user.image = token.picture || null;
-        session.user.status = token.status;
-        session.user.id = token.id;
-        console.log(`[NextAuth] Session created for user: ${session.user.email}, role: ${session.user.role}`);
+      try {
+        if (session.user && token) {
+          // Add custom fields to session
+          session.user.role = token.role || 'customer';
+          session.user.image = token.picture || null;
+          session.user.status = token.status || 'active';
+          session.user.id = token.id || token.sub;
+          console.log(`[NextAuth] Session created for user: ${session.user.email}, role: ${session.user.role}`);
+        }
+        return session;
+      } catch (error) {
+        console.error('[NextAuth] Session callback error:', error);
+        // Return minimal session to prevent total failure
+        return {
+          user: {
+            email: session.user?.email,
+            name: session.user?.name,
+            role: 'customer',
+            status: 'active'
+          },
+          expires: session.expires
+        };
       }
-      return session;
+    },
+  },
+
+  events: {
+    async signOut(message) {
+      console.log('[NextAuth] User signed out');
+    },
+    async session(message) {
+      console.log('[NextAuth] Session accessed');
     },
   },
 
   pages: {
     signIn: "/auth/signin",
+    error: "/auth/signin", // Redirect JWT errors to sign in page
   },
+
+  // Add required NextAuth configuration
+  secret: process.env.NEXTAUTH_SECRET,
+  
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+
+  jwt: {
+    maxAge: 60 * 60 * 24 * 30, // 30 days
+  },
+
+  debug: process.env.NODE_ENV === 'development',
 }
