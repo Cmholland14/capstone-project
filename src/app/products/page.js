@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 import styles from './page.module.css';
 
 export default function ProductsPage() {
   const { data: session } = useSession();
+  const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,6 +16,23 @@ export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('name');
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [addingToCart, setAddingToCart] = useState(null);
+
+  // Handle adding item to cart
+  const handleAddToCart = async (productId) => {
+    setAddingToCart(productId);
+    try {
+      const success = await addToCart(productId, 1);
+      if (success) {
+        // Show success feedback (you could use a toast notification here)
+        console.log('Item added to cart successfully');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+    } finally {
+      setAddingToCart(null);
+    }
+  };
 
   // Fetch products from API
   useEffect(() => {
@@ -266,10 +285,18 @@ export default function ProductsPage() {
                         <div className={styles.productActions}>
                           {session ? (
                             <button 
-                              className={`btn btn-primary ${product.stock === 0 ? 'disabled' : ''}`}
-                              disabled={product.stock === 0}
+                              className={`btn btn-primary ${product.stock === 0 || addingToCart === product._id ? 'disabled' : ''}`}
+                              disabled={product.stock === 0 || addingToCart === product._id}
+                              onClick={() => handleAddToCart(product._id)}
                             >
-                              {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                              {addingToCart === product._id ? (
+                                <>
+                                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                  Adding...
+                                </>
+                              ) : (
+                                product.stock === 0 ? 'Out of Stock' : 'Add to Cart'
+                              )}
                             </button>
                           ) : (
                             <Link href="/auth/signin" className="btn btn-outline-primary">

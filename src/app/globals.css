@@ -34,6 +34,23 @@
   --background: #e6dacb;
   --foreground: #171717;
   
+  /* Complementary Color Palette */
+  --primary: #8b7355;           /* Warm brown - matches navbar */
+  --primary-light: #a68a6d;     /* Lighter brown for hover states */
+  --primary-dark: #6d5a47;      /* Darker brown - matches navbar gradient */
+  --secondary: #9c8472;         /* Muted brown-gray */
+  --secondary-light: #b29a8a;   /* Light brown-gray */
+  --success: #7a8264;           /* Sage green */
+  --success-light: #8e9575;     /* Light sage */
+  --info: #8a8271;             /* Warm gray */
+  --info-light: #9d9584;       /* Light warm gray */
+  --warning: #b8956b;          /* Golden brown */
+  --warning-light: #c9a67d;    /* Light golden brown */
+  --danger: #a67c6c;          /* Muted terracotta */
+  --danger-light: #b88e80;     /* Light terracotta */
+  --light: #f5f0ea;           /* Very light warm beige */
+  --dark: #3d332a;            /* Dark brown */
+  
   /* Font weights */
   --font-weight-light: 300;
   --font-weight-normal: 400;
@@ -165,7 +182,7 @@ a {
 @media (max-width: 991.98px) {
   .navbar-custom .navbar-collapse {
     background: rgba(139, 115, 85, 0.95);
-    border-radius: 10px;
+    border-radius: 0;
     margin-top: 1rem;
     padding: 1rem;
     backdrop-filter: blur(10px);
@@ -174,4 +191,384 @@ a {
   .navbar-custom .navbar-nav .nav-link::after {
     display: none;
   }
+}
+
+/* Custom Stylish Text Logo */
+.logo-text-only {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover .logo-text-only {
+  transform: translateY(-1px);
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.logo-main {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  text-transform: uppercase;
+}
+
+.logo-main::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #ffffff, transparent);
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover .logo-main::after {
+  width: 120%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.logo-sub {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 2px;
+  transition: all 0.3s ease;
+}
+
+.navbar-brand:hover .logo-sub {
+  letter-spacing: 4px;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+@media (max-width: 768px) {
+  .logo-main {
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
+  }
+  
+  .logo-sub {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+  }
+  
+  .navbar-brand:hover .logo-sub {
+    letter-spacing: 3px;
+  }
+}
+
+/* Global Straight Edge Styling - Override Bootstrap Rounded Corners */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger,
+.btn-warning,
+.btn-info,
+.btn-light,
+.btn-dark,
+.btn-outline-primary,
+.btn-outline-secondary,
+.btn-outline-success,
+.btn-outline-danger,
+.btn-outline-warning,
+.btn-outline-info,
+.btn-outline-light,
+.btn-outline-dark,
+.card,
+.card-header,
+.card-footer,
+.form-control,
+.form-select,
+.input-group,
+.input-group-text,
+.alert,
+.badge,
+.modal-content,
+.modal-header,
+.modal-body,
+.modal-footer,
+.dropdown-menu,
+.dropdown-item,
+.nav-pills .nav-link,
+.pagination .page-link,
+.breadcrumb,
+.toast,
+.progress,
+.navbar-toggler,
+.offcanvas,
+.accordion-item,
+.accordion-button {
+  border-radius: 0 !important;
+}
+
+/* Specific overrides for commonly used components */
+.border-radius-0 {
+  border-radius: 0 !important;
+}
+
+/* Ensure hover states maintain straight edges */
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn.active,
+.form-control:focus,
+.form-select:focus {
+  border-radius: 0 !important;
+}
+
+/* Override any custom rounded elements */
+.rounded,
+.rounded-sm,
+.rounded-md,
+.rounded-lg,
+.rounded-xl,
+.rounded-xxl,
+.rounded-1,
+.rounded-2,
+.rounded-3,
+.rounded-4,
+.rounded-5 {
+  border-radius: 0 !important;
+}
+
+/* Ensure images and other elements maintain straight edges where appropriate */
+.img-thumbnail {
+  border-radius: 0 !important;
+}
+
+/* Custom hover effects with straight edges */
+.hover-card {
+  border-radius: 0 !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+  border-radius: 0 !important;
+}
+
+/* Custom Color Scheme - Warm Earth Tones */
+.btn-primary {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: white !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--primary-light) !important;
+  border-color: var(--primary-light) !important;
+  color: white !important;
+}
+
+.btn-outline-primary {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: white !important;
+}
+
+.btn-secondary {
+  background-color: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+  color: white !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  background-color: var(--secondary-light) !important;
+  border-color: var(--secondary-light) !important;
+}
+
+.btn-success {
+  background-color: var(--success) !important;
+  border-color: var(--success) !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+  background-color: var(--success-light) !important;
+  border-color: var(--success-light) !important;
+}
+
+.btn-info {
+  background-color: var(--info) !important;
+  border-color: var(--info) !important;
+}
+
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:active {
+  background-color: var(--info-light) !important;
+  border-color: var(--info-light) !important;
+}
+
+.btn-warning {
+  background-color: var(--warning) !important;
+  border-color: var(--warning) !important;
+  color: white !important;
+}
+
+.btn-warning:hover,
+.btn-warning:focus,
+.btn-warning:active {
+  background-color: var(--warning-light) !important;
+  border-color: var(--warning-light) !important;
+  color: white !important;
+}
+
+.btn-danger {
+  background-color: var(--danger) !important;
+  border-color: var(--danger) !important;
+}
+
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger:active {
+  background-color: var(--danger-light) !important;
+  border-color: var(--danger-light) !important;
+}
+
+/* Badge colors */
+.badge.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.badge.bg-secondary {
+  background-color: var(--secondary) !important;
+}
+
+.badge.bg-success {
+  background-color: var(--success) !important;
+}
+
+.badge.bg-info {
+  background-color: var(--info) !important;
+}
+
+.badge.bg-warning {
+  background-color: var(--warning) !important;
+  color: white !important;
+}
+
+.badge.bg-danger {
+  background-color: var(--danger) !important;
+}
+
+/* Alert colors */
+.alert-primary {
+  background-color: rgba(139, 115, 85, 0.1) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary-dark) !important;
+}
+
+.alert-success {
+  background-color: rgba(122, 130, 100, 0.1) !important;
+  border-color: var(--success) !important;
+  color: var(--success) !important;
+}
+
+.alert-warning {
+  background-color: rgba(184, 149, 107, 0.1) !important;
+  border-color: var(--warning) !important;
+  color: var(--warning) !important;
+}
+
+.alert-danger {
+  background-color: rgba(166, 124, 108, 0.1) !important;
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+}
+
+.alert-info {
+  background-color: rgba(138, 130, 113, 0.1) !important;
+  border-color: var(--info) !important;
+  color: var(--info) !important;
+}
+
+/* Card border colors */
+.border-primary {
+  border-color: var(--primary) !important;
+}
+
+.border-secondary {
+  border-color: var(--secondary) !important;
+}
+
+.border-success {
+  border-color: var(--success) !important;
+}
+
+.border-info {
+  border-color: var(--info) !important;
+}
+
+.border-warning {
+  border-color: var(--warning) !important;
+}
+
+.border-danger {
+  border-color: var(--danger) !important;
+}
+
+/* Text colors */
+.text-primary {
+  color: var(--primary) !important;
+}
+
+.text-secondary {
+  color: var(--secondary) !important;
+}
+
+.text-success {
+  color: var(--success) !important;
+}
+
+.text-info {
+  color: var(--info) !important;
+}
+
+.text-warning {
+  color: var(--warning) !important;
+}
+
+.text-danger {
+  color: var(--danger) !important;
+}
+
+/* Link colors */
+a.text-primary:hover,
+a.text-primary:focus {
+  color: var(--primary-light) !important;
+}
+
+/* Form focus colors */
+.form-control:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(139, 115, 85, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(139, 115, 85, 0.25) !important;
 }

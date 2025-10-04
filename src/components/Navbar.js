@@ -2,14 +2,22 @@
 
 import Link from "next/link"
 import { useSession, signOut } from "next-auth/react"
+import { useCart } from "@/contexts/CartContext"
 
 export default function Navbar() {
     const { data: session } = useSession()
+    const { getItemCount } = useCart()
+    const cartItemCount = getItemCount()
 
     return (
         <nav className="navbar navbar-expand-lg navbar-custom">
             <div className="container">
-                <Link className="navbar-brand" href="/">Wool Store</Link>
+                <Link className="navbar-brand d-flex align-items-center" href="/">
+                    <span className="logo-text-only">
+                        <span className="logo-main">Capstone</span>
+                        <span className="logo-sub">Wool</span>
+                    </span>
+                </Link>
                 <button
                     className="navbar-toggler"
                     type="button"
@@ -31,6 +39,20 @@ export default function Navbar() {
                         <li className="nav-item">
                             <Link className="nav-link" href="/products">Products</Link>
                         </li>
+
+                        {session && (
+                            <li className="nav-item">
+                                <Link className="nav-link position-relative" href="/cart">
+                                    <span>🛒 Cart</span>
+                                    {cartItemCount > 0 && (
+                                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            {cartItemCount}
+                                            <span className="visually-hidden">items in cart</span>
+                                        </span>
+                                    )}
+                                </Link>
+                            </li>
+                        )}
 
                         {session && session.user?.role === "admin" && (
                             <li className="nav-item">
