@@ -1,13 +1,13 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading } = useSimpleAuth();
   const router = useRouter();
   const { cart, clearCart } = useCart();
   const [loading, setLoading] = useState(true);
@@ -21,9 +21,9 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    if (status === 'loading') return;
+    if (authLoading) return;
 
-    if (!session) {
+    if (!user) {
       router.push('/auth/signin');
       return;
     }
@@ -34,7 +34,7 @@ export default function CheckoutPage() {
     }
 
     setLoading(false);
-  }, [session, status, router, cart.items.length]);
+  }, [user, authLoading, router, cart.items.length]);
 
   const handleShippingChange = (e) => {
     setShippingInfo({
@@ -71,9 +71,9 @@ export default function CheckoutPage() {
 
       // Create order using existing orders API
       const orderData = {
-        customerId: session.user.id,
-        customerName: session.user.name,
-        customerEmail: session.user.email,
+        customerId: user.id,
+        customerName: user.name,
+        customerEmail: user.email,
         products: cart.items.map(item => ({
           productId: item.productId,
           productName: item.name,
@@ -89,7 +89,7 @@ export default function CheckoutPage() {
         orderDate: new Date().toISOString()
       };
 
-      const response = await fetch('/api/orders', {
+      const response = await fetch('/api/orders-simple', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (status === 'loading' || loading) {
+  if (authLoading || loading) {
     return (
       <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
         <div className="text-center">
@@ -130,7 +130,7 @@ export default function CheckoutPage() {
     );
   }
 
-  if (!session || cart.items.length === 0) {
+  if (!user || cart.items.length === 0) {
     return null;
   }
 

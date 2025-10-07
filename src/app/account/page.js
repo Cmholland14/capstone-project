@@ -1,20 +1,20 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { useSimpleAuth } from "@/contexts/SimpleAuthContext"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 export default function AccountPage() {
-  const { data: session, status } = useSession()
+  const { user, loading } = useSimpleAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!loading && !user) {
       router.push("/auth/signin")
     }
-  }, [status, router])
+  }, [loading, user, router])
 
-  if (status === "loading") {
+  if (loading) {
     return (
       <div className="container mt-5">
         <div className="text-center">
@@ -27,7 +27,7 @@ export default function AccountPage() {
     )
   }
 
-  if (!session) {
+  if (!user) {
     return (
       <div className="container mt-5">
         <div className="text-center">
@@ -48,9 +48,9 @@ export default function AccountPage() {
             <div className="card-body">
               <div className="row">
                 <div className="col-md-4 text-center mb-3">
-                  {session.user?.image ? (
+                  {user?.image ? (
                     <img 
-                      src={session.user.image} 
+                      src={user.image} 
                       alt="Profile" 
                       className="rounded-circle img-fluid mb-3"
                       style={{ maxWidth: "150px" }}
@@ -65,30 +65,30 @@ export default function AccountPage() {
                   )}
                 </div>
                 <div className="col-md-8">
-                  <h3>Welcome, {session.user?.name || 'User'}!</h3>
+                  <h3>Welcome, {user?.name || 'User'}!</h3>
                   <hr />
                   <div className="row">
                     <div className="col-sm-6">
                       <p><strong>Name:</strong></p>
-                      <p>{session.user?.name || 'Not provided'}</p>
+                      <p>{user?.name || 'Not provided'}</p>
                     </div>
                     <div className="col-sm-6">
                       <p><strong>Email:</strong></p>
-                      <p>{session.user?.email || 'Not provided'}</p>
+                      <p>{user?.email || 'Not provided'}</p>
                     </div>
                     <div className="col-sm-6">
                       <p><strong>Role:</strong></p>
                       <p className="text-capitalize">
-                        <span className={`badge ${session.user?.role === 'admin' ? 'bg-danger' : 'bg-primary'}`}>
-                          {session.user?.role || 'customer'}
+                        <span className={`badge ${user?.role === 'admin' ? 'bg-danger' : 'bg-primary'}`}>
+                          {user?.role || 'customer'}
                         </span>
                       </p>
                     </div>
                     <div className="col-sm-6">
                       <p><strong>Status:</strong></p>
                       <p>
-                        <span className={`badge ${session.user?.status === 'active' ? 'bg-success' : 'bg-warning'}`}>
-                          {session.user?.status || 'active'}
+                        <span className={`badge ${user?.status === 'active' ? 'bg-success' : 'bg-warning'}`}>
+                          {user?.status || 'active'}
                         </span>
                       </p>
                     </div>
@@ -116,7 +116,7 @@ export default function AccountPage() {
                       <i className="fas fa-store me-2"></i>
                       Browse Products
                     </button>
-                    {session.user?.role === 'admin' && (
+                    {user?.role === 'admin' && (
                       <button 
                         className="btn btn-outline-danger"
                         onClick={() => router.push('/admin')}

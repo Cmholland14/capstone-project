@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 import styles from './page.module.css';
 
 export default function ProductsPage() {
-  const { data: session } = useSession();
+  const { user } = useSimpleAuth();
   const { addToCart } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -283,7 +283,7 @@ export default function ProductsPage() {
                         </div>
                         
                         <div className={styles.productActions}>
-                          {session ? (
+                          {user ? (
                             <button 
                               className={`btn btn-primary ${product.stock === 0 || addingToCart === product._id ? 'disabled' : ''}`}
                               disabled={product.stock === 0 || addingToCart === product._id}
@@ -315,7 +315,7 @@ export default function ProductsPage() {
       </section>
 
       {/* Call to Action */}
-      {!session && (
+      {!user && (
         <section className={styles.ctaSection}>
           <div className="container">
             <div className="row">

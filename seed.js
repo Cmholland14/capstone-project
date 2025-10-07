@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 import Product from "./src/lib/models/Product.js";
 import Customer from "./src/lib/models/Customer.js";
 import Order from "./src/lib/models/Order.js";
@@ -13,8 +14,8 @@ const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/capstone
 // Dummy Products
 const products = [
   {
-    name: "Premium Merino Wool Sweater",
-    description: "Luxurious merino wool sweater with premium softness and warmth. Perfect for layering or wearing alone.",
+    name: "Merino Wool Throw",
+    description: "Luxurious merino wool throw with premium softness and warmth. Perfect for layering or using as a decorative piece.",
     price: 189.0,
     stock: 25,
     category: "Clothing",
@@ -26,7 +27,7 @@ const products = [
     price: 249.5,
     stock: 15,
     category: "Home & Living",
-    imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    imageUrl: "https://www.etsy.com/nz/listing/1613052547/luxury-blanket-made-from-100-natural?ref=elp_anchor_listing&pro=1&frs=1&sts=1https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
   },
   {
     name: "Grey Style Wool Throw",
@@ -157,10 +158,26 @@ const seedData = async () => {
     await Order.deleteMany();
     await Admin.deleteMany();
 
-    // Insert new
+    // Hash passwords for customers
+    const customersWithHashedPasswords = await Promise.all(
+      customers.map(async (customer) => ({
+        ...customer,
+        password: await bcrypt.hash(customer.password, 10)
+      }))
+    );
+
+    // Hash passwords for admins
+    const adminsWithHashedPasswords = await Promise.all(
+      admins.map(async (admin) => ({
+        ...admin,
+        password: await bcrypt.hash(admin.password, 10)
+      }))
+    );
+
+    // Insert new data with hashed passwords
     const createdProducts = await Product.insertMany(products);
-    const createdCustomers = await Customer.insertMany(customers);
-    await Admin.insertMany(admins);
+    const createdCustomers = await Customer.insertMany(customersWithHashedPasswords);
+    await Admin.insertMany(adminsWithHashedPasswords);
 
     // Create Orders
     const orders = [

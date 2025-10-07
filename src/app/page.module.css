@@ -2,13 +2,13 @@
 
 .homepage {
   overflow-x: hidden;
-  background-color: #e6dacb;
+  background-color: #f2e6d8;
   min-height: 100vh;
 }
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, #e6dacb 0%, #d4c4b8 100%);
+  background: linear-gradient(135deg, #f2e6d8 0%, #e8dcc8 100%);
   position: relative;
 }
 
@@ -57,8 +57,8 @@
 
 /* Features Section */
 .features {
-  background-color: #e6dacb;
-  border-top: 1px solid #d4c4b8;
+  background-color: #f2e6d8;
+  border-top: 1px solid #e8dcc8;
 }
 
 .featureCard {
@@ -95,7 +95,7 @@
 
 /* About Section */
 .aboutSection {
-  background: linear-gradient(135deg, #e6dacb 0%, #d4c4b8 100%);
+  background: linear-gradient(135deg, #f2e6d8 0%, #e8dcc8 100%);
   padding: 5rem 0;
   position: relative;
 }
@@ -230,7 +230,7 @@
 /* Welcome Section */
 .welcomeSection {
   padding: 3rem 0;
-  background-color: #e6dacb;
+  background-color: #f2e6d8;
 }
 
 .welcomeCard {
@@ -246,7 +246,7 @@
 
 /* Collections Section */
 .collectionsSection {
-  background-color: #e6dacb;
+  background-color: #f2e6d8;
 }
 
 .sectionTitle {
@@ -278,8 +278,8 @@
 
 /* Footer Info */
 .footerInfo {
-  background-color: #e6dacb;
-  border-top: 1px solid #d4c4b8;
+  background-color: #f2e6d8;
+  border-top: 1px solid #e8dcc8;
 }
 
 .footerInfo h5 {

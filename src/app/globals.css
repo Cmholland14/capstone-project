@@ -31,7 +31,7 @@
 */
 
 :root {
-  --background: #e6dacb;
+  --background: #f5e7d3;
   --foreground: #171717;
   
   /* Complementary Color Palette */
@@ -48,7 +48,7 @@
   --warning-light: #c9a67d;    /* Light golden brown */
   --danger: #a67c6c;          /* Muted terracotta */
   --danger-light: #b88e80;     /* Light terracotta */
-  --light: #f5f0ea;           /* Very light warm beige */
+  --light: #f8f2ea;           /* Very light warm peach */
   --dark: #3d332a;            /* Dark brown */
   
   /* Font weights */
@@ -62,7 +62,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #e6dacb;
+    --background: #f5e7d3;
     --foreground: #2d3748;
   }
 }
@@ -71,7 +71,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  background-color: #e6dacb;
+  background-color: #f5e7d3;
 }
 
 body {

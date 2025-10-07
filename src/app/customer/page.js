@@ -1,25 +1,25 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
 
 export default function CustomerDashboard() {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading } = useSimpleAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'loading') return; // Still loading
+    if (authLoading) return; // Still loading
 
-    if (!session) {
+    if (!user) {
       router.push('/auth/signin');
-    } else if (session.user.role !== 'customer') {
+    } else if (user.role !== 'customer') {
       router.push('/access-denied');
     }
-  }, [session, status, router]);
+  }, [user, authLoading, router]);
 
-  if (status === 'loading') {
+  if (authLoading) {
     return (
       <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
         <div className="text-center">
@@ -32,7 +32,7 @@ export default function CustomerDashboard() {
     );
   }
 
-  if (!session || session.user.role !== 'customer') {
+  if (!user || user.role !== 'customer') {
     return null; // Will redirect
   }
 
@@ -43,7 +43,7 @@ export default function CustomerDashboard() {
           <div className="col-12">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <div>
-                <h1 className="display-5 fw-bold mb-2">Welcome back, {session.user.name}!</h1>
+                <h1 className="display-5 fw-bold mb-2">Welcome back, {user.name}!</h1>
                 <p className="lead text-muted">Manage your orders and account from your customer dashboard</p>
               </div>
               <div className="text-end">
@@ -119,8 +119,8 @@ export default function CustomerDashboard() {
               <div className="card-body">
                 <div className="mb-4">
                   <h6 className="text-muted mb-2">Account Details</h6>
-                  <p className="mb-1"><strong>Name:</strong> {session.user.name}</p>
-                  <p className="mb-1"><strong>Email:</strong> {session.user.email}</p>
+                  <p className="mb-1"><strong>Name:</strong> {user.name}</p>
+                  <p className="mb-1"><strong>Email:</strong> {user.email}</p>
                   <p className="mb-3"><strong>Role:</strong> <span className="badge bg-success">Customer</span></p>
                 </div>
                 

@@ -13,7 +13,7 @@ export default function OrdersList({ userId }) {
 
         const fetchOrders = async () => {
             try {
-                const response = await fetch(`/api/orders?customerId=${userId}`);
+                const response = await fetch(`/api/orders-simple?customerId=${userId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch orders');
                 }

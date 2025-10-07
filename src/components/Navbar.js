@@ -1,13 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import { useSession, signOut } from "next-auth/react"
+import { useSimpleAuth } from "@/contexts/SimpleAuthContext"
 import { useCart } from "@/contexts/CartContext"
 
 export default function Navbar() {
-    const { data: session } = useSession()
+    const { user, logout } = useSimpleAuth()
     const { getItemCount } = useCart()
     const cartItemCount = getItemCount()
+
+    const handleLogout = async () => {
+        await logout()
+        window.location.href = '/'
+    }
 
     return (
         <nav className="navbar navbar-expand-lg navbar-custom">
@@ -40,7 +45,7 @@ export default function Navbar() {
                             <Link className="nav-link" href="/products">Products</Link>
                         </li>
 
-                        {session && (
+                        {user && (
                             <li className="nav-item">
                                 <Link className="nav-link position-relative" href="/cart">
                                     <span>🛒 Cart</span>
@@ -54,19 +59,24 @@ export default function Navbar() {
                             </li>
                         )}
 
-                        {session && session.user?.role === "admin" && (
-                            <li className="nav-item">
-                                <Link className="nav-link" href="/admin">Admin</Link>
-                            </li>
+                        {user && user.role === "admin" && (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" href="/admin">Admin</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" href="/admin/images">📷 Images</Link>
+                                </li>
+                            </>
                         )}
 
-                        {session && (
+                        {user && (
                             <li className="nav-item">
                                 <Link className="nav-link" href="/account">Account</Link>
                             </li>
                         )}
 
-                        {!session ? (
+                        {!user ? (
                             <li className="nav-item">
                                 <Link className="nav-link" href="/auth/signin">Login</Link>
                             </li>
@@ -74,7 +84,7 @@ export default function Navbar() {
                             <li className="nav-item">
                                 <button
                                     className="btn btn-outline-light ms-2"
-                                    onClick={() => signOut({ callbackUrl: "/" })}
+                                    onClick={handleLogout}
                                 >
                                     Logout
                                 </button>

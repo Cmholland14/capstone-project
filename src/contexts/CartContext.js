@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useReducer, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSimpleAuth } from './SimpleAuthContext';
 
 const CartContext = createContext();
 
@@ -53,27 +53,27 @@ const initialState = {
 
 export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading } = useSimpleAuth();
 
   // Fetch cart when user logs in
   useEffect(() => {
-    if (status === 'loading') return;
+    if (authLoading) return;
     
-    if (session) {
+    if (user) {
       fetchCart();
     } else {
       dispatch({ type: CART_ACTIONS.CLEAR_CART });
       dispatch({ type: CART_ACTIONS.SET_LOADING, payload: false });
     }
-  }, [session, status]);
+  }, [user, authLoading]);
 
   const fetchCart = async () => {
     try {
       dispatch({ type: CART_ACTIONS.SET_LOADING, payload: true });
-      const response = await fetch('/api/cart');
+      const response = await fetch('/api/cart-simple');
       if (response.ok) {
-        const cartData = await response.json();
-        dispatch({ type: CART_ACTIONS.SET_CART, payload: cartData });
+        const result = await response.json();
+        dispatch({ type: CART_ACTIONS.SET_CART, payload: result.cart });
       }
     } catch (error) {
       console.error('Error fetching cart:', error);
@@ -82,13 +82,13 @@ export function CartProvider({ children }) {
   };
 
   const addToCart = async (productId, quantity = 1) => {
-    if (!session) {
+    if (!user) {
       alert('Please sign in to add items to cart');
       return false;
     }
 
     try {
-      const response = await fetch('/api/cart', {
+      const response = await fetch('/api/cart-simple', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,8 +97,8 @@ export function CartProvider({ children }) {
       });
 
       if (response.ok) {
-        const updatedCart = await response.json();
-        dispatch({ type: CART_ACTIONS.SET_CART, payload: updatedCart });
+        const result = await response.json();
+        dispatch({ type: CART_ACTIONS.SET_CART, payload: result.cart });
         return true;
       } else {
         const error = await response.json();
@@ -113,10 +113,10 @@ export function CartProvider({ children }) {
   };
 
   const updateQuantity = async (productId, quantity) => {
-    if (!session) return false;
+    if (!user) return false;
 
     try {
-      const response = await fetch('/api/cart', {
+      const response = await fetch('/api/cart-simple', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -125,8 +125,8 @@ export function CartProvider({ children }) {
       });
 
       if (response.ok) {
-        const updatedCart = await response.json();
-        dispatch({ type: CART_ACTIONS.SET_CART, payload: updatedCart });
+        const result = await response.json();
+        dispatch({ type: CART_ACTIONS.SET_CART, payload: result.cart });
         return true;
       } else {
         const error = await response.json();
@@ -141,16 +141,20 @@ export function CartProvider({ children }) {
   };
 
   const removeFromCart = async (productId) => {
-    if (!session) return false;
+    if (!user) return false;
 
     try {
-      const response = await fetch(`/api/cart?productId=${productId}`, {
-        method: 'DELETE',
+      const response = await fetch('/api/cart-simple', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, quantity: 0 }),
       });
 
       if (response.ok) {
-        const updatedCart = await response.json();
-        dispatch({ type: CART_ACTIONS.SET_CART, payload: updatedCart });
+        const result = await response.json();
+        dispatch({ type: CART_ACTIONS.SET_CART, payload: result.cart });
         return true;
       }
     } catch (error) {
@@ -161,16 +165,16 @@ export function CartProvider({ children }) {
   };
 
   const clearCart = async () => {
-    if (!session) return false;
+    if (!user) return false;
 
     try {
-      const response = await fetch('/api/cart', {
+      const response = await fetch('/api/cart-simple', {
         method: 'DELETE',
       });
 
       if (response.ok) {
-        const updatedCart = await response.json();
-        dispatch({ type: CART_ACTIONS.SET_CART, payload: updatedCart });
+        const result = await response.json();
+        dispatch({ type: CART_ACTIONS.SET_CART, payload: result.cart });
         return true;
       }
     } catch (error) {

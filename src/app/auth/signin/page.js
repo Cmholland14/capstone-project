@@ -1,27 +1,34 @@
 "use client"
 
-import { signIn } from "next-auth/react"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
-import GoogleIcon from "@/components/icons/GoogleIcon"
+import { useSimpleAuth } from "@/contexts/SimpleAuthContext"
 
 export default function SignInPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+  const { login } = useSimpleAuth()
 
   const handleCredentialsLogin = async (e) => {
     e.preventDefault()
-    const result = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    })
+    setError("")
+    setLoading(true)
 
-    if (result?.error) {
-      setError('Invalid email or password')
-    } else {
-      window.location.href = '/account'
+    try {
+      const result = await login(email, password)
+      if (result.success) {
+        router.push('/account')
+      } else {
+        setError(result.error || 'Invalid email or password')
+      }
+    } catch (error) {
+      setError('Login failed. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -33,26 +40,7 @@ export default function SignInPage() {
             <div className="card-body p-5">
               <div className="text-center mb-4">
                 <h2 className="fw-bold">Member Login</h2>
-              </div>
-
-              <div className="mb-4">
-                <button
-                  className="btn btn-outline-dark d-flex align-items-center justify-content-center w-100 py-2"
-                  onClick={() => signIn("google", { callbackUrl: "/" })}
-                >
-                  <GoogleIcon className="me-2" />
-                  Continue with Google
-                </button>
-              </div>
-
-              <div className="position-relative mb-4">
-                <hr />
-                <span 
-                  className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted"
-                  style={{ fontSize: '0.875rem' }}
-                >
-                  OR
-                </span>
+                <p className="text-muted">Sign in to your account</p>
               </div>
 
               {error && (
@@ -90,15 +78,23 @@ export default function SignInPage() {
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100 mb-3">
-                  Sign In
+                <button type="submit" className="btn btn-primary w-100 mb-3" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Signing In...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
                 </button>
               </form>
 
-              <p className="text-muted text-center small">
-                Use demo credentials: <br />
-                <strong>admin@example.com / admin123</strong>
-              </p>
+              <div className="alert alert-info" role="alert">
+                <strong>Demo Credentials:</strong><br />
+                <strong>Admin:</strong> catherine@woolstore.com / admin123<br />
+                <strong>Customer:</strong> alice@example.com / password123
+              </div>
 
               <div className="text-center mt-4">
                 <p>

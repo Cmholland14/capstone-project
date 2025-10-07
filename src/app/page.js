@@ -1,12 +1,12 @@
 "use client"
 
-import { useSession } from "next-auth/react"
 import Link from 'next/link'
 import Collections from "@/components/collections/ProductCollections"
 import styles from './page.module.css'
+import { useSimpleAuth } from '@/contexts/SimpleAuthContext'
 
 export default function HomePage() {
-  const { data: session } = useSession()
+  const { user, loading } = useSimpleAuth()
 
   return (
     <div className={styles.homepage}>
@@ -29,15 +29,19 @@ export default function HomePage() {
                   <Link href="/products" className="btn btn-primary btn-lg me-3">
                     Shop Collection
                   </Link>
-                  {!session && (
-                    <Link href="/auth/signin" className="btn btn-outline-primary btn-lg">
-                      Sign In
-                    </Link>
-                  )}
-                  {session && (
-                    <Link href="/customer" className="btn btn-outline-primary btn-lg">
-                      My Account
-                    </Link>
+                  {!loading && (
+                    <>
+                      {!user && (
+                        <Link href="/auth/signin" className="btn btn-outline-primary btn-lg">
+                          Sign In
+                        </Link>
+                      )}
+                      {user && (
+                        <Link href="/customer" className="btn btn-outline-primary btn-lg">
+                          My Account
+                        </Link>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -49,7 +53,7 @@ export default function HomePage() {
                   alt="Premium wool throws and blankets" 
                   className="img-fluid rounded-3 shadow-lg"
                   onError={(e) => {
-                    e.target.src = "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    e.target.src = "https://www.cittadesign.com/oslo-lambswool-throw/5637517354.p"
                   }}
                 />
               </div>
@@ -94,11 +98,11 @@ export default function HomePage() {
             <div className="col-lg-6 mb-4 mb-lg-0">
               <div className={styles.aboutImage}>
                 <img 
-                  src="https://images.unsplash.com/photo-1559181567-c3190ca9959b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                  alt="Traditional wool crafting process" 
+                  src="https://unsplash.com/photos/a-shaggy-sheep-standing-in-a-grassy-field-UHLFYLSDC24" 
+                   alt="Traditional wool crafting process"
                   className="img-fluid rounded-3 shadow-lg"
                   onError={(e) => {
-                    e.target.src = "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    e.target.src = "https://unsplash.com/photos/a-shaggy-sheep-standing-in-a-grassy-field-UHLFYLSDC24"
                   }}
                 />
                 <div className={styles.aboutImageOverlay}>
@@ -149,32 +153,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Welcome Message for Logged-in Users */}
-      {session && (
-        <section className={styles.welcomeSection}>
-          <div className="container">
-            <div className="row">
-              <div className="col-12">
-                <div className={`${styles.welcomeCard} card bg-light`}>
-                  <div className="card-body text-center py-4">
-                    <h3>Welcome back, {session.user?.name || 'Valued Customer'}!</h3>
-                    <p className="mb-3">Ready to explore our latest wool collection?</p>
-                    <div className={styles.userActions}>
-                      <Link href="/customer/orders" className="btn btn-outline-primary me-3">
-                        View My Orders
-                      </Link>
-                      <Link href="/customer" className="btn btn-primary">
-                        My Account
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Products Collection */}
       <section id="collections" className={styles.collectionsSection}>
         <div className="container py-5">
@@ -208,19 +186,23 @@ export default function HomePage() {
                   Join thousands of satisfied customers who have made our wool products 
                   part of their daily comfort routine.
                 </p>
-                {!session ? (
-                  <div>
-                    <Link href="/auth/signup" className="btn btn-light btn-lg me-3">
-                      Create Account
-                    </Link>
-                    <Link href="/auth/signin" className="btn btn-outline-light btn-lg">
-                      Sign In
-                    </Link>
-                  </div>
-                ) : (
-                  <Link href="#collections" className="btn btn-light btn-lg">
-                    Continue Shopping
-                  </Link>
+                {!loading && (
+                  <>
+                    {!user ? (
+                      <div>
+                        <Link href="/auth/signup" className="btn btn-light btn-lg me-3">
+                          Create Account
+                        </Link>
+                        <Link href="/auth/signin" className="btn btn-outline-light btn-lg">
+                          Sign In
+                        </Link>
+                      </div>
+                    ) : (
+                      <Link href="#collections" className="btn btn-light btn-lg">
+                        Continue Shopping
+                      </Link>
+                    )}
+                  </>
                 )}
               </div>
             </div>

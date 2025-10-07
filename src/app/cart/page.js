@@ -1,31 +1,31 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function ShoppingCart() {
-  const { data: session, status } = useSession();
+  const { user, loading: authLoading } = useSimpleAuth();
   const router = useRouter();
   const [cart, setCart] = useState({ items: [], total: 0 });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    if (status === 'loading') return;
+    if (authLoading) return;
 
-    if (!session) {
+    if (!user) {
       router.push('/auth/signin');
       return;
     }
 
     fetchCart();
-  }, [session, status, router]);
+  }, [user, authLoading, router]);
 
   const fetchCart = async () => {
     try {
-      const response = await fetch('/api/cart');
+      const response = await fetch('/api/cart-simple');
       if (response.ok) {
         const cartData = await response.json();
         setCart(cartData);
@@ -40,7 +40,7 @@ export default function ShoppingCart() {
   const updateQuantity = async (productId, newQuantity) => {
     setUpdating(true);
     try {
-      const response = await fetch('/api/cart', {
+      const response = await fetch('/api/cart-simple', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ export default function ShoppingCart() {
   const removeItem = async (productId) => {
     setUpdating(true);
     try {
-      const response = await fetch(`/api/cart?productId=${productId}`, {
+      const response = await fetch(`/api/cart-simple?productId=${productId}`, {
         method: 'DELETE',
       });
 
@@ -87,7 +87,7 @@ export default function ShoppingCart() {
     
     setUpdating(true);
     try {
-      const response = await fetch('/api/cart', {
+      const response = await fetch('/api/cart-simple', {
         method: 'DELETE',
       });
 
@@ -103,7 +103,7 @@ export default function ShoppingCart() {
     }
   };
 
-  if (status === 'loading' || loading) {
+  if (authLoading || loading) {
     return (
       <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
         <div className="text-center">
@@ -116,7 +116,7 @@ export default function ShoppingCart() {
     );
   }
 
-  if (!session) {
+  if (!user) {
     return null;
   }
 
