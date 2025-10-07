@@ -49,11 +49,11 @@ export default function HomePage() {
             <div className="col-lg-6">
               <div className={styles.heroImage}>
                 <img 
-                  src="/wool-hero.jpg" 
+                  src="https://www.inkandbrayer.co.nz/cdn/shop/collections/Weave-Home_designer-throw-blanket-nz_1200x953.webp?v=1744929383" 
                   alt="Premium wool throws and blankets" 
                   className="img-fluid rounded-3 shadow-lg"
                   onError={(e) => {
-                    e.target.src = "https://www.cittadesign.com/oslo-lambswool-throw/5637517354.p"
+                    e.target.src = "https://www.inkandbrayer.co.nz/cdn/shop/collections/Weave-Home_designer-throw-blanket-nz_1200x953.webp?v=1744929383"
                   }}
                 />
               </div>
@@ -98,11 +98,11 @@ export default function HomePage() {
             <div className="col-lg-6 mb-4 mb-lg-0">
               <div className={styles.aboutImage}>
                 <img 
-                  src="https://unsplash.com/photos/a-shaggy-sheep-standing-in-a-grassy-field-UHLFYLSDC24" 
+                  src="https://images-ap-prod.cms.commerce.dynamics.com/cms/api/tstpxgfmq/imageFileData/search?fileName=/Products%2FICP0120_000_001.jpg&w=0&h=772&q=80&m=6&f=jpg&cropfocalregion=true" 
                    alt="Traditional wool crafting process"
                   className="img-fluid rounded-3 shadow-lg"
                   onError={(e) => {
-                    e.target.src = "https://unsplash.com/photos/a-shaggy-sheep-standing-in-a-grassy-field-UHLFYLSDC24"
+                    e.target.src = "https://images-ap-prod.cms.commerce.dynamics.com/cms/api/tstpxgfmq/imageFileData/search?fileName=/Products%2FICP0120_000_001.jpg&w=0&h=772&q=80&m=6&f=jpg&cropfocalregion=true"
                   }}
                 />
                 <div className={styles.aboutImageOverlay}>
