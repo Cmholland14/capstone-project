@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
   try {
     await connectDB();
     
-    const { id } = params;
+    const { id } = await params;  // Await params in Next.js 15
     
     if (!id) {
       return NextResponse.json(
@@ -47,7 +47,7 @@ export async function PUT(request, { params }) {
   try {
     await connectDB();
     
-    const { id } = params;
+    const { id } = await params;  // Await params in Next.js 15
     const body = await request.json();
     
     if (!id) {
@@ -160,7 +160,7 @@ export async function DELETE(request, { params }) {
   try {
     await connectDB();
     
-    const { id } = params;
+    const { id } = await params;  // Await params in Next.js 15
     
     if (!id) {
       return NextResponse.json(

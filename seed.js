@@ -27,7 +27,7 @@ const products = [
     price: 249.5,
     stock: 15,
     category: "Home & Living",
-    imageUrl: "https://www.etsy.com/nz/listing/1613052547/luxury-blanket-made-from-100-natural?ref=elp_anchor_listing&pro=1&frs=1&sts=1https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
   },
   {
     name: "Grey Style Wool Throw",
@@ -95,55 +95,23 @@ const products = [
   },
 ];
 
-// Dummy Customers
+// Minimal customers for testing (optional - users can now register themselves)
 const customers = [
   {
-    name: "Alice Johnson",
-    email: "alice@example.com",
+    name: "Test Customer",
+    email: "test@example.com",
     password: "password123",
-    address: { street: "12 Lamb St", city: "Wellington", country: "New Zealand" },
-  },
-  {
-    name: "James Smith",
-    email: "james@example.com",
-    password: "password123",
-    address: { street: "34 Wool Ave", city: "Auckland", country: "New Zealand" },
-  },
-
-  {
-    name: "John Johnson",
-    email: "john@example.com",
-    password: "password123",
-    address: { street: "12 Lamb St", city: "Wellington", country: "New Zealand" },
-  },
-
-  {
-    name: "Sue Brown",
-    email: "sue@example.com",
-    password: "password123",
-    address: { street: "34 Wool Ave", city: "Auckland", country: "New Zealand" },
+    address: { street: "123 Test St", city: "Wellington", country: "New Zealand" },
   },
 ];
 
-// Dummy Admins
+// Essential admin account - DO NOT REMOVE (needed for admin access)
 const admins = [
   {
-    name: "Catherine Holland",
-    email: "catherine@woolstore.com",
+    name: "System Administrator",
+    email: "admin@woolstore.com",
     password: "admin123",
     role: "Admin",
-  },
-  {
-    name: "Michael Brown",
-    email: "michael@woolstore.com",
-    password: "manager123",
-    role: "Manager",
-  },
-  {
-    name: "Sophie Lee",
-    email: "sophie@woolstore.com",
-    password: "staff123",
-    role: "Staff",
   },
 ];
 
@@ -179,31 +147,16 @@ const seedData = async () => {
     const createdCustomers = await Customer.insertMany(customersWithHashedPasswords);
     await Admin.insertMany(adminsWithHashedPasswords);
 
-    // Create Orders
+    // Create minimal test orders
     const orders = [
       {
         customer: createdCustomers[0]._id,
         products: [
           { product: createdProducts[0]._id, quantity: 1 },
-          { product: createdProducts[2]._id, quantity: 2 },
+          { product: createdProducts[2]._id, quantity: 1 },
         ],
-        totalAmount: 279.0 + 2 * 179.0, // Boucle Wool Throw + 2x Grey Style Wool Throw = 637.0
+        totalAmount: 189.0 + 179.0, // Merino Wool Throw + Grey Style Wool Throw = 368.0
         status: "Pending",
-      },
-      {
-        customer: createdCustomers[1]._id,
-        products: [{ product: createdProducts[1]._id, quantity: 1 }],
-        totalAmount: 249.5, // Chunky Knit Wool Blanket
-        status: "Shipped",
-      },
-      {
-        customer: createdCustomers[2]._id,
-        products: [
-          { product: createdProducts[3]._id, quantity: 1 },
-          { product: createdProducts[5]._id, quantity: 1 },
-        ],
-        totalAmount: 279.0 + 179.0, // Modern Lifestyle + Oslo Lambswool = 458.0
-        status: "Delivered",
       },
     ];
 

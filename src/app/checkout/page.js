@@ -3,13 +3,12 @@
 import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
   const { user, loading: authLoading } = useSimpleAuth();
   const router = useRouter();
-  const { cart, clearCart } = useCart();
+  const [cart, setCart] = useState({ items: [], total: 0 });
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [shippingInfo, setShippingInfo] = useState({
@@ -28,13 +27,68 @@ export default function CheckoutPage() {
       return;
     }
 
-    if (cart.items.length === 0) {
+    fetchCart();
+  }, [user, authLoading, router]);
+
+  const fetchCart = async () => {
+    try {
+      const response = await fetch('/api/cart-simple');
+      if (response.ok) {
+        const result = await response.json();
+        const cartData = result.cart || { items: [], total: 0 };
+        
+        // Fetch product details for each cart item (similar to cart page)
+        const cartWithProductDetails = await Promise.all(
+          (cartData.items || []).map(async (item) => {
+            try {
+              const productResponse = await fetch(`/api/products/${item.productId}`);
+              if (productResponse.ok) {
+                const product = await productResponse.json();
+                return {
+                  ...item,
+                  name: product.name,
+                  price: product.price,
+                  stock: product.stock,
+                  image: product.imageUrl
+                };
+              }
+              return { ...item, name: 'Unknown Product', price: 0, stock: 0 };
+            } catch (error) {
+              return { ...item, name: 'Unknown Product', price: 0, stock: 0 };
+            }
+          })
+        );
+
+        const correctTotal = cartWithProductDetails.reduce((sum, item) => 
+          sum + (item.price * item.quantity), 0
+        );
+
+        setCart({ items: cartWithProductDetails, total: correctTotal });
+
+        if (cartWithProductDetails.length === 0) {
+          router.push('/cart');
+          return;
+        }
+      } else {
+        router.push('/cart');
+        return;
+      }
+    } catch (error) {
+      console.error('Error fetching cart:', error);
       router.push('/cart');
       return;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setLoading(false);
-  }, [user, authLoading, router, cart.items.length]);
+  const clearCart = async () => {
+    try {
+      await fetch('/api/cart-simple', { method: 'DELETE' });
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+    }
+  };
 
   const handleShippingChange = (e) => {
     setShippingInfo({
@@ -69,24 +123,15 @@ export default function CheckoutPage() {
         return;
       }
 
-      // Create order using existing orders API
+      // Create order using simplified format that matches Order model
       const orderData = {
         customerId: user.id,
-        customerName: user.name,
-        customerEmail: user.email,
         products: cart.items.map(item => ({
           productId: item.productId,
-          productName: item.name,
-          price: item.price,
           quantity: item.quantity
         })),
-        total: calculateTotal(),
-        subtotal: cart.total,
-        shipping: calculateShipping(),
-        tax: calculateTax(),
-        shippingAddress: shippingInfo,
-        status: 'pending',
-        orderDate: new Date().toISOString()
+        totalAmount: calculateTotal(),
+        shippingAddress: shippingInfo
       };
 
       const response = await fetch('/api/orders-simple', {

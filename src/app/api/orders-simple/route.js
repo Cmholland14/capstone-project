@@ -45,43 +45,44 @@ export async function POST(request) {
     await connectDB();
     
     const body = await request.json();
-    console.log('[API] POST /api/orders-simple - Request received');
+    console.log('[API] POST /api/orders-simple - Request received', body);
     
     // Basic validation
-    const { customerId, customerName, customerEmail, products, total, subtotal, shipping, shippingInfo } = body;
+    const { customerId, products, totalAmount, shippingAddress } = body;
     
-    if (!customerId || !customerName || !customerEmail || !products || !Array.isArray(products) || products.length === 0) {
+    if (!customerId) {
       return NextResponse.json(
-        { error: 'Missing required fields: customerId, customerName, customerEmail, products' },
+        { error: 'Customer ID is required' },
         { status: 400 }
       );
     }
     
-    if (!total || total <= 0) {
+    if (!products || !Array.isArray(products) || products.length === 0) {
       return NextResponse.json(
-        { error: 'Total must be greater than 0' },
+        { error: 'Products array is required and cannot be empty' },
         { status: 400 }
       );
     }
     
-    // Create order
+    if (!totalAmount || totalAmount <= 0) {
+      return NextResponse.json(
+        { error: 'Total amount must be greater than 0' },
+        { status: 400 }
+      );
+    }
+    
+    // Create order using the correct schema format
     const orderData = {
       customer: customerId,
-      customerName,
-      customerEmail,
       products: products.map(p => ({
         product: p.productId,
-        productName: p.productName,
-        price: p.price,
         quantity: p.quantity
       })),
-      totalAmount: total,
-      subtotal: subtotal || total,
-      shipping: shipping || 0,
-      shippingInfo: shippingInfo || {},
-      status: 'pending',
-      createdAt: new Date()
+      totalAmount: totalAmount,
+      status: 'Pending'  // Capital P to match enum in Order model
     };
+    
+    console.log('[API] POST /api/orders-simple - Creating order with data:', orderData);
     
     const order = new Order(orderData);
     await order.save();
@@ -95,7 +96,8 @@ export async function POST(request) {
     return NextResponse.json(
       { 
         error: 'Failed to create order',
-        message: error.message 
+        message: error.message,
+        details: error.toString()
       }, 
       { status: 500 }
     );

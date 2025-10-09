@@ -60,14 +60,9 @@ export default function Navbar() {
                         )}
 
                         {user && user.role === "admin" && (
-                            <>
-                                <li className="nav-item">
-                                    <Link className="nav-link" href="/admin">Admin</Link>
-                                </li>
-                                <li className="nav-item">
-                                    <Link className="nav-link" href="/admin/images">📷 Images</Link>
-                                </li>
-                            </>
+                            <li className="nav-item">
+                                <Link className="nav-link" href="/admin">Admin</Link>
+                            </li>
                         )}
 
                         {user && (
