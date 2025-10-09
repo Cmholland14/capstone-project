@@ -92,8 +92,8 @@ export default function SignInPage() {
 
               <div className="alert alert-info" role="alert">
                 <strong>Demo Credentials:</strong><br />
-                <strong>Admin:</strong> catherine@woolstore.com / admin123<br />
-                <strong>Customer:</strong> alice@example.com / password123
+                <strong>Admin:</strong> admin@woolstore.com / admin123<br />
+                <strong>Customer:</strong> test@example.com / password123
               </div>
 
               <div className="text-center mt-4">

@@ -237,74 +237,83 @@ export default function ProductsPage() {
               {filteredProducts.map((product) => (
                 <div key={product._id} className="col-lg-4 col-md-6 mb-4">
                   <div className={styles.productCard}>
-                    <div className={styles.productImage}>
-                      <img
-                        src={product.imageUrl}
-                        alt={product.name}
-                        onError={(e) => {
-                          e.target.src = `https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80`;
-                        }}
-                      />
-                      {product.stock === 0 && (
-                        <div className={styles.outOfStock}>
-                          <span>Out of Stock</span>
-                        </div>
-                      )}
-                      {product.stock > 0 && product.stock <= 5 && (
-                        <div className={styles.lowStock}>
-                          <span>Only {product.stock} left!</span>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className={styles.productInfo}>
-                      <div className={styles.categoryBadge}>
-                        {product.category}
+                    <Link href={`/products/${product._id}`} className={styles.productLink}>
+                      <div className={styles.productImage}>
+                        <img
+                          src={product.imageUrl}
+                          alt={product.name}
+                          onError={(e) => {
+                            e.target.src = `https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80`;
+                          }}
+                        />
+                        {product.stock === 0 && (
+                          <div className={styles.outOfStock}>
+                            <span>Out of Stock</span>
+                          </div>
+                        )}
+                        {product.stock > 0 && product.stock <= 5 && (
+                          <div className={styles.lowStock}>
+                            <span>Only {product.stock} left!</span>
+                          </div>
+                        )}
                       </div>
                       
-                      <h3 className={styles.productName}>{product.name}</h3>
-                      
-                      <p className={styles.productDescription}>
-                        {product.description}
-                      </p>
-                      
-                      <div className={styles.productFooter}>
-                        <div className={styles.priceStock}>
-                          <span className={styles.price}>
-                            ${product.price.toFixed(2)}
-                          </span>
-                          <span className={styles.stock}>
-                            {product.stock > 0 ? (
-                              `${product.stock} in stock`
-                            ) : (
-                              'Out of stock'
-                            )}
-                          </span>
+                      <div className={styles.productInfo}>
+                        <div className={styles.categoryBadge}>
+                          {product.category}
                         </div>
                         
-                        <div className={styles.productActions}>
-                          {user ? (
-                            <button 
-                              className={`btn btn-primary ${product.stock === 0 || addingToCart === product._id ? 'disabled' : ''}`}
-                              disabled={product.stock === 0 || addingToCart === product._id}
-                              onClick={() => handleAddToCart(product._id)}
-                            >
-                              {addingToCart === product._id ? (
-                                <>
-                                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                  Adding...
-                                </>
+                        <h3 className={styles.productName}>{product.name}</h3>
+                        
+                        <p className={styles.productDescription}>
+                          {product.description.length > 100 
+                            ? `${product.description.substring(0, 100)}...` 
+                            : product.description
+                          }
+                        </p>
+                        
+                        <div className={styles.productFooter}>
+                          <div className={styles.priceStock}>
+                            <span className={styles.price}>
+                              ${product.price.toFixed(2)}
+                            </span>
+                            <span className={styles.stock}>
+                              {product.stock > 0 ? (
+                                `${product.stock} in stock`
                               ) : (
-                                product.stock === 0 ? 'Out of Stock' : 'Add to Cart'
+                                'Out of stock'
                               )}
-                            </button>
-                          ) : (
-                            <Link href="/auth/signin" className="btn btn-outline-primary">
-                              Sign in to Purchase
-                            </Link>
-                          )}
+                            </span>
+                          </div>
                         </div>
                       </div>
+                    </Link>
+                    
+                    <div className={styles.productActions}>
+                      {user ? (
+                        <button 
+                          className={`btn btn-primary ${product.stock === 0 || addingToCart === product._id ? 'disabled' : ''}`}
+                          disabled={product.stock === 0 || addingToCart === product._id}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleAddToCart(product._id);
+                          }}
+                        >
+                          {addingToCart === product._id ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                              Adding...
+                            </>
+                          ) : (
+                            product.stock === 0 ? 'Out of Stock' : 'Add to Cart'
+                          )}
+                        </button>
+                      ) : (
+                        <Link href="/auth/signin" className="btn btn-outline-primary" onClick={(e) => e.stopPropagation()}>
+                          Sign in to Purchase
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>

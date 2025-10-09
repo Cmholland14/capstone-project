@@ -139,12 +139,9 @@ export default function HomePage() {
                     <p>Natural Wool</p>
                   </div>
                 </div>
-                <div className={styles.aboutActions}>
-                  <Link href="/products" className="btn btn-primary btn-lg me-3">
+                <div className={`${styles.aboutActions} text-center`}>
+                  <Link href="/products" className="btn btn-primary btn-lg">
                     Shop Our Collection
-                  </Link>
-                  <Link href="#collections" className="btn btn-outline-primary btn-lg">
-                    Learn More
                   </Link>
                 </div>
               </div>

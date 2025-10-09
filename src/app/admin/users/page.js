@@ -11,6 +11,14 @@ export default function UsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAddUserModal, setShowAddUserModal] = useState(false);
+  const [newUser, setNewUser] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'customer'
+  });
+  const [addingUser, setAddingUser] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -40,6 +48,42 @@ export default function UsersPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    setAddingUser(true);
+    
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setShowAddUserModal(false);
+        setNewUser({ name: '', email: '', password: '', role: 'customer' });
+        fetchUsers(); // Refresh the user list
+        alert('User added successfully!');
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to add user: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error adding user:', error);
+      alert('Failed to add user. Please try again.');
+    } finally {
+      setAddingUser(false);
+    }
+  };
+
+  const handleModalClose = () => {
+    setShowAddUserModal(false);
+    setNewUser({ name: '', email: '', password: '', role: 'customer' });
   };
 
   if (authLoading || loading) {
@@ -177,7 +221,10 @@ export default function UsersPage() {
               <div className="card-body">
                 <div className="row g-3">
                   <div className="col-md-3">
-                    <button className="btn btn-primary w-100">
+                    <button 
+                      className="btn btn-primary w-100"
+                      onClick={() => setShowAddUserModal(true)}
+                    >
                       <i className="fas fa-user-plus me-2"></i>
                       Add New User
                     </button>
@@ -189,9 +236,9 @@ export default function UsersPage() {
                     </button>
                   </div>
                   <div className="col-md-3">
-                    <Link href="/admin/images" className="btn btn-info w-100">
-                      <i className="fas fa-images me-2"></i>
-                      Manage Images
+                    <Link href="/admin/products" className="btn btn-info w-100">
+                      <i className="fas fa-box me-2"></i>
+                      Manage Products
                     </Link>
                   </div>
                   <div className="col-md-3">
@@ -206,6 +253,119 @@ export default function UsersPage() {
           </div>
         </div>
       </div>
+
+      {/* Add User Modal */}
+      {showAddUserModal && (
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content" style={{ backgroundColor: '#f8f2ea', border: '1px solid #e5d4c1' }}>
+              <div className="modal-header" style={{ borderBottom: '1px solid #e5d4c1' }}>
+                <h5 className="modal-title" style={{ color: '#3d332a', fontWeight: '600' }}>Add New User</h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={handleModalClose}
+                  aria-label="Close"
+                ></button>
+              </div>
+              <form onSubmit={handleAddUser}>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label htmlFor="userName" className="form-label" style={{ color: '#3d332a', fontWeight: '500' }}>
+                      Full Name
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="userName"
+                      value={newUser.name}
+                      onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                      required
+                      style={{ border: '1px solid #e5d4c1', backgroundColor: 'white' }}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="userEmail" className="form-label" style={{ color: '#3d332a', fontWeight: '500' }}>
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="userEmail"
+                      value={newUser.email}
+                      onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                      required
+                      style={{ border: '1px solid #e5d4c1', backgroundColor: 'white' }}
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="userPassword" className="form-label" style={{ color: '#3d332a', fontWeight: '500' }}>
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="userPassword"
+                      value={newUser.password}
+                      onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                      required
+                      minLength="6"
+                      style={{ border: '1px solid #e5d4c1', backgroundColor: 'white' }}
+                    />
+                    <div className="form-text" style={{ color: '#6d5a47' }}>
+                      Password must be at least 6 characters long.
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="userRole" className="form-label" style={{ color: '#3d332a', fontWeight: '500' }}>
+                      Role
+                    </label>
+                    <select
+                      className="form-select"
+                      id="userRole"
+                      value={newUser.role}
+                      onChange={(e) => setNewUser({...newUser, role: e.target.value})}
+                      style={{ border: '1px solid #e5d4c1', backgroundColor: 'white' }}
+                    >
+                      <option value="customer">Customer</option>
+                      <option value="admin">Administrator</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="modal-footer" style={{ borderTop: '1px solid #e5d4c1' }}>
+                  <button 
+                    type="button" 
+                    className="btn btn-outline-secondary" 
+                    onClick={handleModalClose}
+                    style={{ borderColor: '#9c8472', color: '#9c8472' }}
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                    disabled={addingUser}
+                    style={{ 
+                      backgroundColor: '#8b7355', 
+                      borderColor: '#8b7355',
+                      fontWeight: '500'
+                    }}
+                  >
+                    {addingUser ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Adding User...
+                      </>
+                    ) : (
+                      'Add User'
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
