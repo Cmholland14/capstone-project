@@ -11,7 +11,7 @@ services:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-change-this-password}
       MONGO_INITDB_DATABASE: capstone-wool-store
     volumes:
       - mongodb_data:/data/db
@@ -30,10 +30,10 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
-      MONGODB_URI: mongodb://admin:password123@mongodb:27017/capstone-wool-store?authSource=admin
-      NEXTAUTH_URL: http://localhost:3000
-      NEXTAUTH_SECRET: your-super-secret-jwt-secret-key-here
-      SESSION_SECRET: your-session-secret-key-here
+      MONGODB_URI: mongodb://admin:${MONGO_ROOT_PASSWORD:-change-this-password}@mongodb:27017/capstone-wool-store?authSource=admin
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-generate-a-secure-secret}
+      SESSION_SECRET: ${SESSION_SECRET:-generate-a-secure-session-secret}
     depends_on:
       - mongodb
     networks:
