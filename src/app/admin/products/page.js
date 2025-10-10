@@ -28,7 +28,7 @@ export default function ProductManagement() {
     if (authLoading) return;
     
     if (!user || user.role !== 'admin') {
-      router.push('/access-denied');
+      router.push('/auth/signin');
       return;
     }
     
