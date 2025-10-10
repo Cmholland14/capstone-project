@@ -1,4 +1,4 @@
-import Order from '../models/Order.js';
+import Order from '@/lib/models/Order';
 
 export class OrderDao {
     async getAllOrders() {

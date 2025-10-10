@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { connectDB } from '../../../lib/mongodb.js';
-import Order from '../../../lib/models/Order.js';
+import { connectDB } from '@/lib/mongodb';
+import Order from '@/lib/models/Order';
 
 // GET /api/orders-simple - Get orders (simplified, with optional customer filter)
 export async function GET(request) {

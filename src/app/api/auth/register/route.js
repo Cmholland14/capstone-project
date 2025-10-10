@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import { connectDB } from '../../../../lib/mongodb.js'
-import Customer from '../../../../lib/models/Customer.js'
-import Admin from '../../../../lib/models/Admin.js'
+import { connectDB } from '@/lib/mongodb'
+import Customer from '@/lib/models/Customer'
+import Admin from '@/lib/models/Admin'
 
 export async function POST(request) {
   try {

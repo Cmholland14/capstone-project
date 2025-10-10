@@ -1,9 +1,9 @@
 // Simple session management for authentication
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import { connectDB } from '../../../lib/mongodb.js'
-import Customer from '../../../lib/models/Customer.js'
-import Admin from '../../../lib/models/Admin.js'
+import { connectDB } from '@/lib/mongodb'
+import Customer from '@/lib/models/Customer'
+import Admin from '@/lib/models/Admin'
 
 // Simple session store (in production, use Redis)
 const sessions = global.simpleSessions || (global.simpleSessions = new Map())

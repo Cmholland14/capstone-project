@@ -30,14 +30,8 @@ const nextConfig = {
     ],
   },
 
-  // Basic webpack configuration for path aliases
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': './src',
-    };
-    return config;
-  },
+  // Enable standalone output for deployment
+  output: 'standalone',
 
   // Environment variables
   env: {

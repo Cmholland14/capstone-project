@@ -1,4 +1,4 @@
-import Product from '../models/Product.js';
+import Product from '@/lib/models/Product';
 
 export class ProductDao {
     async getAllProducts() {
