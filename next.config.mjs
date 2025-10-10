@@ -57,9 +57,6 @@ const nextConfig = {
     return config;
   },
 
-  // Enable standalone output for deployment
-  output: 'standalone',
-
   // Environment variables
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
