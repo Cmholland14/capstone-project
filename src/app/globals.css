@@ -572,3 +572,8 @@ a.text-primary:focus {
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 0.2rem rgba(139, 115, 85, 0.25) !important;
 }
+
+/* Animation for smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}

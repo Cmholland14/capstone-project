@@ -1,0 +1,49 @@
+# Docker Compose for Development
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: wool-store-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: capstone-wool-store
+    volumes:
+      - mongodb_data:/data/db
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - wool-store-network
+
+  # Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wool-store-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017/capstone-wool-store?authSource=admin
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: your-super-secret-jwt-secret-key-here
+      SESSION_SECRET: your-session-secret-key-here
+    depends_on:
+      - mongodb
+    networks:
+      - wool-store-network
+    volumes:
+      - ./.env.production:/app/.env.production:ro
+
+volumes:
+  mongodb_data:
+
+networks:
+  wool-store-network:
+    driver: bridge

@@ -368,11 +368,6 @@
   }
 }
 
-/* Animation for smooth scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
 /* Loading animation for images */
 .heroImage img {
   opacity: 0;

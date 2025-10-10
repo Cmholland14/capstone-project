@@ -5,15 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build",
+    "build:turbo": "next build --turbopack",
     "start": "next start",
+    "start:prod": "NODE_ENV=production next start",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --watchAll=false",
     "seed": "node seed.js",
-    "reset-db": "node seed.js"
+    "reset-db": "node seed.js",
+    "deploy:build": "npm run lint && npm run test:ci && npm run build",
+    "docker:build": "docker build -t wool-store .",
+    "docker:run": "docker run -p 3000:3000 wool-store"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
