@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
 import { useCart } from '@/contexts/CartContext';
@@ -127,9 +128,12 @@ export default function ProductDetailPage() {
             <div className="col-lg-6 mb-4">
               <div className={styles.productImages}>
                 <div className={styles.mainImage}>
-                  <img
+                  <Image
                     src={product.imageUrl}
                     alt={product.name}
+                    width={800}
+                    height={600}
+                    style={{ objectFit: 'cover' }}
                     className="img-fluid rounded-3"
                     onError={(e) => {
                       e.target.src = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';

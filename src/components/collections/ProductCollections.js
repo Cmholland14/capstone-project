@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Collections() {
@@ -65,9 +66,11 @@ export default function Collections() {
                             <div className="card h-100 shadow-sm" style={{ transition: 'transform 0.3s ease' }} 
                                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
                                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
-                                <img 
+                                <Image 
                                     src={product.imageUrl} 
                                     alt={product.name} 
+                                    width={400}
+                                    height={250}
                                     className="card-img-top"
                                     style={{ height: '250px', objectFit: 'cover' }}
                                     onError={(e) => {

@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
@@ -239,9 +240,12 @@ export default function ProductsPage() {
                   <div className={styles.productCard}>
                     <Link href={`/products/${product._id}`} className={styles.productLink}>
                       <div className={styles.productImage}>
-                        <img
+                        <Image
                           src={product.imageUrl}
                           alt={product.name}
+                          width={400}
+                          height={300}
+                          style={{ objectFit: 'cover' }}
                           onError={(e) => {
                             e.target.src = `https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80`;
                           }}

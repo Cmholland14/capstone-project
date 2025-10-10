@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -304,9 +305,11 @@ export default function ProductManagement() {
                       <div className="mb-3">
                         <label className="form-label">Image Preview</label>
                         <div>
-                          <img 
+                          <Image 
                             src={formData.imageUrl} 
                             alt="Preview" 
+                            width={200}
+                            height={200}
                             style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }}
                             className="img-thumbnail"
                             onError={(e) => {
@@ -380,9 +383,11 @@ export default function ProductManagement() {
                         {products.map((product) => (
                           <tr key={product._id}>
                             <td>
-                              <img 
+                              <Image 
                                 src={product.imageUrl} 
                                 alt={product.name}
+                                width={60}
+                                height={60}
                                 style={{ width: '60px', height: '60px', objectFit: 'cover' }}
                                 className="rounded"
                                 onError={(e) => {
