@@ -1,12 +1,14 @@
 'use client';
 
 import { useSimpleAuth } from '@/contexts/SimpleAuthContext';
+import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function CheckoutPage() {
   const { user, loading: authLoading } = useSimpleAuth();
+  const { clearCart } = useCart();
   const router = useRouter();
   const [cart, setCart] = useState({ items: [], total: 0 });
   const [loading, setLoading] = useState(true);
@@ -16,7 +18,7 @@ export default function CheckoutPage() {
     city: '',
     state: '',
     zipCode: '',
-    country: 'USA'
+    country: 'NZ'
   });
 
   useEffect(() => {
@@ -79,14 +81,6 @@ export default function CheckoutPage() {
       return;
     } finally {
       setLoading(false);
-    }
-  };
-
-  const clearCart = async () => {
-    try {
-      await fetch('/api/cart-simple', { method: 'DELETE' });
-    } catch (error) {
-      console.error('Error clearing cart:', error);
     }
   };
 

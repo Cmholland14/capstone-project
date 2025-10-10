@@ -1,0 +1,931 @@
+openapi: 3.0.3
+info:
+  title: Capstone Wool Store API
+  description: |
+    RESTful API for the Capstone Wool Store e-commerce application.
+    
+    This API provides endpoints for managing wool products, user authentication, 
+    shopping cart operations, and order processing for a premium New Zealand wool store.
+    
+    ## Authentication
+    Most endpoints require authentication using session-based cookies. Use the `/api/simple-auth` 
+    endpoint to authenticate and receive a session cookie.
+    
+    ## Base URL
+    - Development: `http://localhost:3001/api`
+    - Production: `https://your-domain.com/api`
+    
+  version: 1.0.0
+  contact:
+    name: Capstone Wool Store
+    email: support@woolstore.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3001/api
+    description: Development server
+  - url: http://localhost:3000/api
+    description: Alternative development server
+
+tags:
+  - name: Authentication
+    description: User authentication and registration
+  - name: Products
+    description: Product catalog management
+  - name: Cart
+    description: Shopping cart operations
+  - name: Orders
+    description: Order management
+  - name: Users
+    description: User management (Admin only)
+
+paths:
+  # Authentication Endpoints
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Create a new customer or admin account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                  description: Full name of the user
+                email:
+                  type: string
+                  format: email
+                  example: "john.doe@example.com"
+                  description: Valid email address
+                password:
+                  type: string
+                  minLength: 6
+                  example: "password123"
+                  description: Password (minimum 6 characters)
+                role:
+                  type: string
+                  enum: [customer, admin]
+                  default: customer
+                  example: "customer"
+                  description: User role
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "User registered successfully"
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /simple-auth:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and create session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "test@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              description: Session token cookie
+              schema:
+                type: string
+                example: "session-token=abc123; HttpOnly; Path=/"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    get:
+      tags:
+        - Authentication
+      summary: Get current user session
+      description: Check authentication status and get current user info
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: User session information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated:
+                    type: boolean
+                    example: false
+
+    delete:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Destroy user session
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+
+  # Products Endpoints
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Get all products
+      description: Retrieve a list of all products with optional filtering and sorting
+      parameters:
+        - name: category
+          in: query
+          description: Filter by product category
+          schema:
+            type: string
+            example: "Home & Living"
+        - name: search
+          in: query
+          description: Search products by name or description
+          schema:
+            type: string
+            example: "wool blanket"
+        - name: sortBy
+          in: query
+          description: Sort products by specified field
+          schema:
+            type: string
+            enum: [name, price-low, price-high, stock]
+            example: "price-low"
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Products
+      summary: Create a new product
+      description: Add a new product to the catalog (Admin only)
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      description: Retrieve detailed information about a specific product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: string
+            example: "507f1f77bcf86cd799439011"
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Products
+      summary: Update product
+      description: Update an existing product (Admin only)
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: string
+            example: "507f1f77bcf86cd799439011"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Products
+      summary: Delete product
+      description: Remove a product from the catalog (Admin only)
+      security:
+        - sessionCookie: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: string
+            example: "507f1f77bcf86cd799439011"
+      responses:
+        '200':
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Product deleted successfully"
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Cart Endpoints
+  /cart-simple:
+    get:
+      tags:
+        - Cart
+      summary: Get user's cart
+      description: Retrieve the current user's shopping cart
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Shopping cart contents
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cart:
+                    $ref: '#/components/schemas/Cart'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Cart
+      summary: Add item to cart
+      description: Add a product to the user's shopping cart
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+                - quantity
+              properties:
+                productId:
+                  type: string
+                  example: "507f1f77bcf86cd799439011"
+                  description: ID of the product to add
+                quantity:
+                  type: integer
+                  minimum: 1
+                  example: 2
+                  description: Quantity to add
+      responses:
+        '200':
+          description: Item added to cart
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cart:
+                    $ref: '#/components/schemas/Cart'
+        '400':
+          description: Invalid input or insufficient stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags:
+        - Cart
+      summary: Update cart item quantity
+      description: Update the quantity of an item in the cart
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+                - quantity
+              properties:
+                productId:
+                  type: string
+                  example: "507f1f77bcf86cd799439011"
+                quantity:
+                  type: integer
+                  minimum: 0
+                  example: 3
+                  description: New quantity (0 to remove item)
+      responses:
+        '200':
+          description: Cart updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cart:
+                    $ref: '#/components/schemas/Cart'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - Cart
+      summary: Clear cart
+      description: Remove all items from the user's cart
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Cart cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  cart:
+                    $ref: '#/components/schemas/Cart'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # Orders Endpoints
+  /orders-simple:
+    get:
+      tags:
+        - Orders
+      summary: Get user's orders
+      description: Retrieve all orders for the current user
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: List of user's orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - Orders
+      summary: Create new order
+      description: Place a new order with cart contents
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - customerId
+                - products
+                - totalAmount
+                - shippingAddress
+              properties:
+                customerId:
+                  type: string
+                  example: "507f1f77bcf86cd799439011"
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: string
+                        example: "507f1f77bcf86cd799439011"
+                      quantity:
+                        type: integer
+                        example: 2
+                totalAmount:
+                  type: number
+                  format: float
+                  example: 199.99
+                shippingAddress:
+                  $ref: '#/components/schemas/ShippingAddress'
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Invalid order data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  # User Management Endpoints (Admin only)
+  /users-simple:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Retrieve all users (Admin only)
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session-token
+      description: Session-based authentication using HTTP-only cookies
+
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          example: "john.doe@example.com"
+        role:
+          type: string
+          enum: [customer, admin]
+          example: "customer"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-10-10T10:00:00.000Z"
+
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        name:
+          type: string
+          example: "Merino Wool Throw"
+        description:
+          type: string
+          example: "Luxurious merino wool throw with premium softness and warmth"
+        price:
+          type: number
+          format: float
+          example: 189.99
+        stock:
+          type: integer
+          example: 25
+        category:
+          type: string
+          example: "Home & Living"
+        imageUrl:
+          type: string
+          format: uri
+          example: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-10-10T10:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-10-10T10:00:00.000Z"
+
+    ProductInput:
+      type: object
+      required:
+        - name
+        - description
+        - price
+        - stock
+        - category
+      properties:
+        name:
+          type: string
+          example: "Merino Wool Throw"
+        description:
+          type: string
+          example: "Luxurious merino wool throw with premium softness and warmth"
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 189.99
+        stock:
+          type: integer
+          minimum: 0
+          example: 25
+        category:
+          type: string
+          example: "Home & Living"
+        imageUrl:
+          type: string
+          format: uri
+          example: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105"
+
+    CartItem:
+      type: object
+      properties:
+        productId:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        quantity:
+          type: integer
+          example: 2
+        price:
+          type: number
+          format: float
+          example: 189.99
+
+    Cart:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        total:
+          type: number
+          format: float
+          example: 379.98
+
+    ShippingAddress:
+      type: object
+      required:
+        - address
+        - city
+        - state
+        - zipCode
+        - country
+      properties:
+        address:
+          type: string
+          example: "123 Main Street"
+        city:
+          type: string
+          example: "Wellington"
+        state:
+          type: string
+          example: "Wellington"
+        zipCode:
+          type: string
+          example: "6011"
+        country:
+          type: string
+          example: "New Zealand"
+
+    Order:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        customerId:
+          type: string
+          example: "507f1f77bcf86cd799439011"
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              productId:
+                type: string
+                example: "507f1f77bcf86cd799439011"
+              quantity:
+                type: integer
+                example: 2
+        totalAmount:
+          type: number
+          format: float
+          example: 199.99
+        status:
+          type: string
+          enum: [Pending, Processing, Shipped, Delivered, Cancelled]
+          example: "Pending"
+        shippingAddress:
+          $ref: '#/components/schemas/ShippingAddress'
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-10-10T10:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2023-10-10T10:00:00.000Z"
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid input data"
+        message:
+          type: string
+          example: "The provided data is invalid"
+        details:
+          type: object
+          description: Additional error details (optional)
+
+  examples:
+    DemoCredentials:
+      summary: Demo Login Credentials
+      description: Use these credentials for testing
+      value:
+        admin:
+          email: "admin@woolstore.com"
+          password: "admin123"
+        customer:
+          email: "test@example.com"
+          password: "password123"
