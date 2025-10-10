@@ -30,30 +30,12 @@ const nextConfig = {
     ],
   },
 
-  // Webpack configuration for better module resolution
-  webpack: (config, { isServer }) => {
-    // Add file extensions for module resolution
-    config.resolve.extensionAlias = {
-      '.js': ['.js', '.ts', '.tsx'],
-    };
-    
-    // Ensure proper module resolution
+  // Basic webpack configuration for path aliases
+  webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': './src',
     };
-    
-    // Add fallbacks for Node.js modules
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-        crypto: false,
-      };
-    }
-    
     return config;
   },
 
