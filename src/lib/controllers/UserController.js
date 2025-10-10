@@ -1,4 +1,4 @@
-import { UserDao } from '@/lib/dao/UserDao';
+import { UserDao } from '../dao/UserDao.js';
 import bcrypt from 'bcryptjs';
 
 export class UserController {

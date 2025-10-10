@@ -1,4 +1,4 @@
-import { Admin } from '@/lib/models';
+import Admin from '../models/Admin.js';
 
 export class AdminDao {
     async getAllAdmins() {

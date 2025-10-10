@@ -1,4 +1,4 @@
-import { ProductDao } from '@/lib/dao/ProductDao';
+import { ProductDao } from '../dao/ProductDao.js';
 
 export class ProductController {
     constructor(productDao = new ProductDao()) {

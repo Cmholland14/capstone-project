@@ -1,6 +1,6 @@
-import { OrderDao } from '@/lib/dao/OrderDao';
-import { ProductDao } from '@/lib/dao/ProductDao';
-import { UserDao } from '@/lib/dao/UserDao';
+import { OrderDao } from '../dao/OrderDao.js';
+import { ProductDao } from '../dao/ProductDao.js';
+import { UserDao } from '../dao/UserDao.js';
 
 export class OrderController {
     constructor(orderDao = new OrderDao(), productDao = new ProductDao(), userDao = new UserDao()) {

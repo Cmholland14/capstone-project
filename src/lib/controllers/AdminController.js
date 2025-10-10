@@ -1,4 +1,4 @@
-import { AdminDao } from '@/lib/dao/AdminDao';
+import { AdminDao } from '../dao/AdminDao.js';
 import bcrypt from 'bcryptjs';
 
 export class AdminController {

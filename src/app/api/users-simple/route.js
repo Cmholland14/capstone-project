@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import { Customer, Admin } from '@/lib/models';
+import Customer from '../../../lib/models/Customer.js';
+import Admin from '../../../lib/models/Admin.js';
 
 // GET /api/users-simple - Get all users (simplified, no auth required for demo)
 export async function GET(request) {
