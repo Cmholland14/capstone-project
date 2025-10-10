@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import { connectDB } from '@/lib/mongodb'
+import { connectDB } from '../../../../lib/mongodb.js'
 import Customer from '../../../../lib/models/Customer.js'
 import Admin from '../../../../lib/models/Admin.js'
 

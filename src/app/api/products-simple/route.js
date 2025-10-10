@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { connectDB } from '@/lib/mongodb'
+import { connectDB } from '../../../lib/mongodb.js'
 import Product from '../../../lib/models/Product.js'
 
 export async function GET(request) {

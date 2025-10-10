@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { connectDB } from '@/lib/mongodb';
+import { NextResponse } from 'next/server'
+import { connectDB } from '../../../lib/mongodb.js';
 import Order from '../../../lib/models/Order.js';
 
 // GET /api/orders-simple - Get orders (simplified, with optional customer filter)

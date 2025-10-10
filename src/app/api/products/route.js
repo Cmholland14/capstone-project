@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { ProductController } from '@/lib/controllers/ProductController';
-import connectDB from '@/lib/mongodb';
+import { ProductController } from '../../../lib/controllers/ProductController.js';
+import connectDB from '../../../lib/mongodb.js';
 
 // Create a controller instance
 const productController = new ProductController();

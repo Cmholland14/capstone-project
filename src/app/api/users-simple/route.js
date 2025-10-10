@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { connectDB } from '@/lib/mongodb';
+import { NextResponse } from 'next/server'
+import { connectDB } from '../../../lib/mongodb.js';
 import Customer from '../../../lib/models/Customer.js';
 import Admin from '../../../lib/models/Admin.js';
 
