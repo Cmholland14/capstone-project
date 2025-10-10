@@ -2,8 +2,8 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { connectDB } from '@/lib/mongodb'
-import Customer from '@/lib/models/Customer'
-import Admin from '@/lib/models/Admin'
+import Customer from '@/lib/models/Customer.js'
+import Admin from '@/lib/models/Admin.js'
 
 // Simple session store (in production, use Redis)
 const sessions = global.simpleSessions || (global.simpleSessions = new Map())
