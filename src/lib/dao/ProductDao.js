@@ -1,4 +1,4 @@
-import Product from '@/lib/models/Product';
+import { Product } from '@/lib/models';
 
 export class ProductDao {
     async getAllProducts() {

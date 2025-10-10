@@ -37,6 +37,23 @@ const nextConfig = {
       '.js': ['.js', '.ts', '.tsx'],
     };
     
+    // Ensure proper module resolution
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': './src',
+    };
+    
+    // Add fallbacks for Node.js modules
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+      };
+    }
+    
     return config;
   },
 
