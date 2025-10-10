@@ -5,5 +5,14 @@
     "src/app/api/**/*.js": {
       "maxDuration": 30
     }
+  },
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci --no-cache",
+  "build": {
+    "env": {
+      "NEXT_TELEMETRY_DISABLED": "1",
+      "SKIP_ENV_VALIDATION": "1",
+      "FORCE_BUILD": "2025-10-10-20-07"
+    }
   }
 }
