@@ -30,6 +30,16 @@ const nextConfig = {
     ],
   },
 
+  // Webpack configuration for better module resolution
+  webpack: (config, { isServer }) => {
+    // Add file extensions for module resolution
+    config.resolve.extensionAlias = {
+      '.js': ['.js', '.ts', '.tsx'],
+    };
+    
+    return config;
+  },
+
   // Enable standalone output for deployment
   output: 'standalone',
 
